@@ -15,6 +15,9 @@ namespace PlayerHappiness
         static List<ISensor> m_Sensors = new List<ISensor>();
         static List<CollectorContext> m_Contexts = new List<CollectorContext>();
         static Dictionary<string, string> m_Urls = new Dictionary<string, string>();
+        static List<CustomYieldInstruction> m_Promisess = new List<CustomYieldInstruction>();
+        static float m_StartTime;
+        static float m_EndTime;
 
         public static void Initialize()
         {
@@ -41,14 +44,14 @@ namespace PlayerHappiness
 
         public static void Start()
         {
-            m_Contexts.Clear();
+	        m_Contexts.Clear();
             m_Urls.Clear();
 
-            float startTime = Time.realtimeSinceStartup;
+            m_StartTime = Time.realtimeSinceStartup;
 
             for (var i = 0; i < m_Sensors.Count; i++)
             {
-                m_Contexts.Add(new CollectorContext(startTime));
+                m_Contexts.Add(new CollectorContext(m_StartTime));
                 m_Sensors[i].SetContext(m_Contexts[i]);
                 
                 m_Sensors[i].Start();
@@ -57,9 +60,11 @@ namespace PlayerHappiness
 
         public static void Stop(Dictionary<string, string> metadata)
         {
+	        m_EndTime =  Time.realtimeSinceStartup;
+	        m_Promisess.Clear();
             for (var i = 0; i < m_Sensors.Count; i++)
             {
-                m_Sensors[i].Stop();
+	            m_Promisess.Add((m_Sensors[i].Stop()));
             }
 
             CoroutineHandler.StartStaticCoroutine(UploadAll());
@@ -109,6 +114,8 @@ namespace PlayerHappiness
             {
                 builder.AppendFormat(",\"{0}\":\"{1}\"",url.Key, url.Value);
             }
+            
+            builder.AppendFormat(",\"Length\":{0}", (int)Math.Round((m_EndTime - m_StartTime)) * 1000);
             
             builder.Append("}");
             
@@ -193,6 +200,11 @@ namespace PlayerHappiness
 		static IEnumerator UploadAll()
         {
             yield return null;
+
+            foreach (var customYieldInstruction in m_Promisess)
+            {
+	            yield return customYieldInstruction;
+            }
 
             foreach (var collectorContext in m_Contexts)
             {

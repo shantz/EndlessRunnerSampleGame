@@ -58,6 +58,7 @@ namespace PlayerHappiness.Sensors
 
         public void Start()
         {
+	        m_IsReady = false;
 			// no
 			recordMicrophone = false;
 
@@ -88,7 +89,6 @@ namespace PlayerHappiness.Sensors
 		}
 		private void StartMicrophone()
 		{
-			m_IsReady = false;
 #if !UNITY_WEBGL || UNITY_EDITOR // No `Microphone` API on WebGL :(
 			// Create a microphone clip
 			microphoneSource.clip = Microphone.Start(null, true, 60, 48000);
@@ -123,6 +123,6 @@ namespace PlayerHappiness.Sensors
 #endif
 		}
 
-		public override bool keepWaiting => m_IsReady;
+		public override bool keepWaiting => !m_IsReady;
     }
 }

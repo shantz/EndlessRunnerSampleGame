@@ -81,7 +81,7 @@ namespace PlayerHappiness.Sensors
 		{
 			Debug.Log("Saved recording to: " + path);
 			recordedFilePath = path;
-			m_Context.SetMetdataFile("CameraFile", path);
+			m_Context.SetMetdataFile("cameraVideoUrl", path);
 			m_IsReady = true;
 #if UNITY_EDITOR
 			PlaybackRecording();
@@ -108,6 +108,6 @@ namespace PlayerHappiness.Sensors
             videoRecorder.CommitFrame(frame, recordingClock.Timestamp);
         }
 
-        public override bool keepWaiting => m_IsReady;
+        public override bool keepWaiting => !m_IsReady;
     }
 }
