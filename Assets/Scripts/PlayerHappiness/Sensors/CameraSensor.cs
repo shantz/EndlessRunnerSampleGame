@@ -29,6 +29,7 @@ namespace PlayerHappiness.Sensors
 
         private bool recording;
 
+        public string name => "facecam";
         public CameraSensor()
         {
 			recordingClock = new RealtimeClock();
