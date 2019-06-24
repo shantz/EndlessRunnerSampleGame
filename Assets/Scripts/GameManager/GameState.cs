@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using PlayerHappiness;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
@@ -103,6 +104,8 @@ public class GameState : AState
 
         m_AdsInitialised = false;
         m_GameoverSelectionDone = false;
+        
+        HappinessCollector.Start();
 
         StartGame();
     }
@@ -418,6 +421,11 @@ public class GameState : AState
 
     public void GameOver()
     {
+        HappinessCollector.Stop(new Dictionary<string, string>
+        {
+            ["score"] = trackManager.score.ToString()
+        });
+        
         manager.SwitchState("GameOver");
     }
 

@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using PlayerHappiness;
+
 #if UNITY_ANALYTICS
 using UnityEngine.Analytics;
 #endif
@@ -22,6 +24,8 @@ public class GameManager : MonoBehaviour
 
     protected void OnEnable()
     {
+        HappinessCollector.Initialize();
+        
         PlayerData.Create();
 
         s_Instance = this;
