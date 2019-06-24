@@ -194,7 +194,6 @@ namespace PlayerHappiness
                     }
                     else
                     {
-						//m_Urls[bytes.Key] = uploadMedia.downloadHandler.text;
 						UploadResponse uploadResponse = JsonUtility.FromJson<UploadResponse>(uploadMedia.downloadHandler.text);
 						m_Urls[bytes.Key] = uploadResponse.downloadUrl;
 
