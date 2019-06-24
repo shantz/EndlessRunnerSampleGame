@@ -231,9 +231,10 @@ namespace PlayerHappiness
 
                 foreach (var file in collectorContext.MediaFile)
                 {
-                    UnityWebRequest uploadMedia = new UnityWebRequest("http://hw19-player-happiness-api.unityads.unity3d.com/api/uploads", "POST");
+                    UnityWebRequest uploadMedia = new UnityWebRequest("https://hw19-player-happiness-api.unityads.unity3d.com/api/uploads", "POST");
 
                     uploadMedia.uploadHandler = new UploadHandlerFile(file.Value);
+                    uploadMedia.downloadHandler = new DownloadHandlerBuffer();
 
                     yield return uploadMedia.SendWebRequest();
 
@@ -243,7 +244,8 @@ namespace PlayerHappiness
                     }
                     else
                     {
-                        m_Urls[file.Key] = uploadMedia.downloadHandler.text;
+	                    UploadResponse uploadResponse = JsonUtility.FromJson<UploadResponse>(uploadMedia.downloadHandler.text);
+	                    m_Urls[file.Key] = uploadResponse.downloadUrl;
                     }
                 }
             }
@@ -261,7 +263,7 @@ namespace PlayerHappiness
             if (webRequest.isHttpError || webRequest.isNetworkError)
             {
                 Debug.LogErrorFormat("Failed to send JSON to server: {0}, {1}", webRequest.error, webRequest.responseCode);
-                Debug.LogErrorFormat(webRequest.downloadHandler.text);
+                Debug.LogError(webRequest.downloadHandler.text);
             }
         }
     }

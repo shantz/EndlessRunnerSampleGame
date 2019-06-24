@@ -70,7 +70,7 @@ public class CharacterInputController : MonoBehaviour
     protected readonly Vector3 k_StartingPosition = Vector3.forward * 2f;
 
     protected const int k_StartingLane = 1;
-    protected const float k_GroundingSpeed = 80f;
+    protected const float k_GroundingSpeed = 500f;
     protected const float k_ShadowRaycastDistance = 100f;
     protected const float k_ShadowGroundOffset = 0.01f;
     protected const float k_TrackSpeedToJumpAnimSpeedRatio = 0.6f;

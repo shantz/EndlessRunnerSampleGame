@@ -71,9 +71,8 @@ namespace PlayerHappiness.Sensors
 				0,
 				0,
 				FileLocationCB,
-                "facecam.mp4"
+				"facecam.mp4"
 			);
-            recording = true;
         }
 
 
@@ -97,6 +96,7 @@ namespace PlayerHappiness.Sensors
         void OnStart (Texture preview) {
         // Display the camera preview
             cameraTexture =  preview;
+            recording = true;
         }
         void OnFrame () {
             if (!recording) {
