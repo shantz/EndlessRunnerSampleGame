@@ -29,6 +29,7 @@ namespace PlayerHappiness
                 RegisterSensor(new GyroscopeSensor(0.5f));
                 RegisterSensor(new TouchSensor());
                 RegisterSensor(new HeartbeatSensor());
+                RegisterSensor(new GameSensor());
             }
         }
         
@@ -97,6 +98,7 @@ namespace PlayerHappiness
 					WriteValues(builder, frame.vector2s);
 					WriteValues(builder, frame.vector3s);
                     WriteValues(builder, frame.quaternions);
+                    WriteValues(builder, frame.strings);
                     builder.Append("}");
                 }
                 builder.Append("]");

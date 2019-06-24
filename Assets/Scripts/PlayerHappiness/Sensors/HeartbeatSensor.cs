@@ -44,9 +44,12 @@ namespace PlayerHappiness.Sensors
             GameObject.Find("HearBeatSensor").SetActive(true);
             
 #if UNITY_ANDROID
-            var player = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-            var activity = player.GetStatic<AndroidJavaObject>("currentActivity");
-            activity.Call("startDiscovery", new HeartbeatSensorListener(this));
+            if (!Application.isEditor)
+            {
+                var player = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+                var activity = player.GetStatic<AndroidJavaObject>("currentActivity");
+                activity.Call("startDiscovery", new HeartbeatSensorListener(this));
+            }
 #endif
         }
         

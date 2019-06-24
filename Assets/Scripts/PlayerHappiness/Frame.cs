@@ -17,6 +17,17 @@ namespace PlayerHappiness
             m_FrameInfo.ints.TrimExcess();
             m_FrameInfo.vector2s.TrimExcess();
             m_FrameInfo.vector3s.TrimExcess();
+            m_FrameInfo.strings.TrimExcess();
+        }
+
+        public void Write(string name, string value)
+        {
+            m_FrameInfo.strings.Add(new FrameData<string>
+            {
+                name = name,
+                value = value
+
+            });
         }
 
         public void Write(string name, float value)

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using PlayerHappiness.Sensors;
 using UnityEngine.AddressableAssets;
 
 /// <summary>
@@ -130,6 +131,8 @@ public class CharacterCollider : MonoBehaviour
             controller.StopMoving();
 
 			c.enabled = false;
+			
+			GameSensor.instance.SendEvent("impact");
 
             Obstacle ob = c.gameObject.GetComponent<Obstacle>();
 
