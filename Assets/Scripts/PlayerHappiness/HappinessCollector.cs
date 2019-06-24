@@ -30,6 +30,10 @@ namespace PlayerHappiness
                 RegisterSensor(new TouchSensor());
                 RegisterSensor(new HeartbeatSensor());
                 RegisterSensor(new GameSensor());
+                if (!Application.isEditor)
+                {
+	                RegisterSensor(new BrainSensor());
+                }
             }
         }
         
