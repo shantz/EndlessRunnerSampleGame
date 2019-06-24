@@ -19,8 +19,9 @@ namespace PlayerHappiness
 
                 m_Sensors = new List<ISensor>();
                 m_Contexts = new List<CollectorContext>();
-                
+
                 RegisterSensor(new GyroscopeSensor(0.5f));
+                RegisterSensor(new TouchSensor());
             }
         }
         

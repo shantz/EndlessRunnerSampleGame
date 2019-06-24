@@ -14,6 +14,7 @@ namespace PlayerHappiness
         public void Dispose()
         {
             m_FrameInfo.floats.TrimExcess();
+            m_FrameInfo.ints.TrimExcess();
             m_FrameInfo.vector2s.TrimExcess();
             m_FrameInfo.vector3s.TrimExcess();
         }
@@ -28,13 +29,23 @@ namespace PlayerHappiness
             });
         }
 
+        public void Write(string name, int value)
+        {
+            m_FrameInfo.ints.Add(new FrameData<int>
+            {
+                name = name,
+                value = value
+
+            });
+        }
+
         public void Write(string name, Vector2 value)
         {
             m_FrameInfo.vector2s.Add(new FrameData<Vector2>
             {
                 name = name,
                 value = value
-                
+
             });
         }
 

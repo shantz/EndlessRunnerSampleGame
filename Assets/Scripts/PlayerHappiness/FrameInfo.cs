@@ -13,6 +13,7 @@ namespace PlayerHappiness
     {
         public float timestamp;
         public List<FrameData<float>> floats;
+        public List<FrameData<int>> ints;
         public List<FrameData<Vector2>> vector2s;
         public List<FrameData<Vector3>> vector3s;
         public List<FrameData<Quaternion>> quaternions;
@@ -21,6 +22,7 @@ namespace PlayerHappiness
         {
             this.timestamp = timestamp;
             floats = new List<FrameData<float>>(capacity);
+            ints = new List<FrameData<int>>(capacity);
             vector2s = new List<FrameData<Vector2>>(capacity);
             vector3s = new List<FrameData<Vector3>>(capacity);
             quaternions = new List<FrameData<Quaternion>>(capacity);
