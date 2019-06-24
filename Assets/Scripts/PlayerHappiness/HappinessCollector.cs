@@ -27,6 +27,7 @@ namespace PlayerHappiness
                 RegisterSensor(new GyroscopeSensor(0.5f));
                 RegisterSensor(new FakeMedia());
                 RegisterSensor(new TouchSensor());
+                RegisterSensor(new HeartbeatSensor());
             }
         }
         
