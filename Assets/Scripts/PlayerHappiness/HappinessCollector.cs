@@ -199,12 +199,28 @@ namespace PlayerHappiness
 
 					}
                 }
+
+                foreach (var file in collectorContext.MediaFile)
+                {
+                    UnityWebRequest uploadMedia = new UnityWebRequest("http://34.98.89.204/api/uploads", "POST");
+
+                    uploadMedia.uploadHandler = new UploadHandlerFile(file.Value);
+
+                    yield return uploadMedia.SendWebRequest();
+
+                    if (uploadMedia.isHttpError || uploadMedia.isNetworkError)
+                    {
+                        Debug.LogErrorFormat("Failed to send media {0} to server: {1}", file.Key,  uploadMedia.error);
+                    }
+                    else
+                    {
+                        m_Urls[file.Key] = uploadMedia.downloadHandler.text;
+                    }
+                }
             }
-
-			Debug.Log(ToJSON());
-
+            
             UnityWebRequest webRequest = UnityWebRequest.Post("http://hw19-player-happiness-api.unityads.unity3d.com/api/sessions", ToJSON());
-
+                
             yield return webRequest.SendWebRequest();
 
             if (webRequest.isHttpError || webRequest.isNetworkError)

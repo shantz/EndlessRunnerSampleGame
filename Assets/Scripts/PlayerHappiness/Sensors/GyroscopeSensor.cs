@@ -23,11 +23,11 @@ namespace PlayerHappiness.Sensors
             {
                 using (var frame = m_Context.DoFrame())
                 {
-                    frame.Write("rotationRate", Input.gyro.rotationRate);
-                    frame.Write("gravity", Input.gyro.gravity);
-                    frame.Write("userAcceleration", Input.gyro.userAcceleration);
-                    frame.Write("rotationRateUnbiased", Input.gyro.rotationRateUnbiased);
-                    frame.Write("attitude", Input.gyro.attitude);
+                    frame.Write("rr", Input.gyro.rotationRate);
+                    frame.Write("g", Input.gyro.gravity);
+                    frame.Write("ua", Input.gyro.userAcceleration);
+                    frame.Write("rru", Input.gyro.rotationRateUnbiased);
+                    frame.Write("a", Input.gyro.attitude);
                 }
 
                 yield return new WaitForSeconds(Input.gyro.updateInterval);

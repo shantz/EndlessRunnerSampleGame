@@ -12,10 +12,12 @@ namespace PlayerHappiness
         
         public List<FrameInfo> Frames;
         public Dictionary<string, byte[]> Media;
+        public Dictionary<string, string> MediaFile;
         
         public CollectorContext(float startTime)
         {
             Media = new Dictionary<string, byte[]>();
+            MediaFile = new Dictionary<string, string>();
             Frames = new List<FrameInfo>(120 * 1000 / 16);
             m_StartTime = startTime;
         }
@@ -33,9 +35,9 @@ namespace PlayerHappiness
         }
 
 	    public void SetMetdataFile(string name, string path)
-	    {
-
-	    }
+        {
+            MediaFile[name] = path;
+        }
 
     }
 }

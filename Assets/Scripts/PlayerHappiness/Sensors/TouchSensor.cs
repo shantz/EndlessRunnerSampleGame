@@ -6,14 +6,8 @@ namespace PlayerHappiness.Sensors
     public class TouchSensor : ISensor
     {
         ICollectorContext m_Context;
+        bool isActive;
 
-        
-        public TouchSensor()
-        {
-            
-        }
-        
-        
         public void SetContext(ICollectorContext context)
         {
             m_Context = context;
@@ -21,33 +15,37 @@ namespace PlayerHappiness.Sensors
 
         IEnumerator CollectFrame()
         {
-            if (Input.touchCount > 0)
+            while (isActive)
             {
-                using (var frame = m_Context.DoFrame())
+                if (Input.touchCount > 0)
                 {
-                    frame.Write("numberOfTouches", Input.touchCount);
-                    for(int i = 0; i < Input.touchCount; i++)
+                    for (int i = 0; i < Input.touchCount; i++)
                     {
-                        Touch touch = Input.GetTouch(i);
-                        if (Input.touchPressureSupported)
+                        using (var frame = m_Context.DoFrame())
                         {
-                            frame.Write($"touchPressure{i}", touch.pressure);
+                            Touch touch = Input.GetTouch(i);
+                            frame.Write($"c", touch.position);
+                            if (Input.touchPressureSupported)
+                            {
+                                frame.Write($"p", touch.pressure);
+                            }
                         }
                     }
                 }
+
+                yield return null;
             }
-            yield return null;
         }
 
         public void Start()
         {
-            Input.gyro.enabled = true;
+            isActive = true;
             CoroutineHandler.StartStaticCoroutine(CollectFrame());
         }
 
         public void Stop()
         {
-            Input.gyro.enabled = false;
+            isActive = false;
         }
     }
 }
