@@ -59,7 +59,7 @@ public class GameOverState : AState
 
     public override void Tick()
     {
-	    runButton.interactable = HappinessCollector.isReady;
+	    runButton.gameObject.SetActive(HappinessCollector.isReady);
     }
 
 	public void OpenLeaderboard()
