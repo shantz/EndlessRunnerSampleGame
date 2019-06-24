@@ -30,12 +30,12 @@ namespace NatCorder {
         /// <param name="videoBitrate">Video bitrate in bits per second</param>
         /// <param name="videoKeyframeInterval">Keyframe interval in seconds</param>
         [Doc(@"MP4RecorderCtor")]
-        public MP4Recorder (int videoWidth, int videoHeight, int videoFramerate, int audioSampleRate, int audioChannelCount, Action<string> recordingCallback, int videoBitrate = (int)(960 * 540 * 11.4f), int videoKeyframeInterval = 3) {
+        public MP4Recorder (int videoWidth, int videoHeight, int videoFramerate, int audioSampleRate, int audioChannelCount, Action<string> recordingCallback, string fileName = "", int videoBitrate = (int)(960 * 540 * 11.4f), int videoKeyframeInterval = 3) {
             videoWidth = videoWidth >> 1 << 1;
             videoHeight = videoHeight >> 1 << 1;
             var readbackFormat = TextureFormat.RGBA32;
             var recordingDirectory = Application.persistentDataPath;
-            var recordingFilename = string.Format("recording_{0}.mp4", DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss_fff"));
+            var recordingFilename = fileName == "" ? string.Format("recording_{0}.mp4", DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss_fff")) : fileName;
             switch (Application.platform) {
                 case RuntimePlatform.OSXEditor:
                     recordingDirectory = Directory.GetCurrentDirectory();

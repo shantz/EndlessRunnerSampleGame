@@ -67,7 +67,8 @@ namespace PlayerHappiness.Sensors
 				30,
 				0,
 				0,
-				FileLocationCB
+				FileLocationCB,
+                "facecam.mp4"
 			);
             recording = true;
         }
