@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -78,7 +79,7 @@ namespace PlayerHappiness
                 var sensor = m_Sensors[i];
                 var context = m_Contexts[i];
 
-                builder.AppendFormat("\"{0}\":", sensor.GetType().Name);
+                builder.AppendFormat("\"{0}\":", sensor.name);
                 builder.Append("[");
                 for (int j = 0; j < context.Frames.Count; j++)
                 {
@@ -90,7 +91,7 @@ namespace PlayerHappiness
                     }
                 
                     builder.Append("{");
-                    builder.AppendFormat("\"ts\":{0}", frame.timestamp);
+                    builder.AppendFormat("\"ts\":{0}", (int)Math.Round(frame.timestamp * 1000));
                     WriteValues(builder, frame.floats);
 					WriteValues(builder, frame.ints);
 					WriteValues(builder, frame.vector2s);
@@ -113,15 +114,32 @@ namespace PlayerHappiness
 
         static void WriteValues<T>(StringBuilder builder, List<FrameData<T>> datas)
         {
-            for (int j = 0; j < datas.Count; j++)
+	        for (int j = 0; j < datas.Count; j++)
             {
-				if (typeof(T).Equals(typeof(float)) || typeof(T).Equals(typeof(int)))
-					builder.AppendFormat(",\"{0}\": {1}", datas[j].name, datas[j].value);
-				else if(typeof(T).Equals(typeof(string)))
+	            if (typeof(T).Equals(typeof(float)) || typeof(T).Equals(typeof(int)))
+	            {
+		            builder.AppendFormat(",\"{0}\": {1}", datas[j].name, datas[j].value);
+	            }
+	            else if(typeof(T).Equals(typeof(string)))
+	            {
 					builder.AppendFormat(",\"{0}\": \"{1}\"", datas[j].name, datas[j].value);
-				else
-					builder.AppendFormat(",\"{0}\": {1}", datas[j].name, JsonUtility.ToJson(datas[j].value));
-			}
+	            }
+				else if (typeof(T).Equals(typeof(Vector2)))
+	            {
+		            Vector2 value = (Vector2)(object)datas[j].value;
+		            builder.AppendFormat(",\"{0}\": [{1},{2}]", datas[j].name,value.x, value.y);
+	            }
+	            else if (typeof(T).Equals(typeof(Vector3)))
+	            {
+		            Vector3 value = (Vector3)(object)datas[j].value;
+		            builder.AppendFormat(",\"{0}\": [{1},{2},{3}]", datas[j].name,value.x, value.y, value.z);
+	            }
+	            else if (typeof(T).Equals(typeof(Quaternion)))
+	            {
+		            Quaternion value = (Quaternion)(object)datas[j].value;
+		            builder.AppendFormat(",\"{0}\": [{1},{2},{3},{4}]", datas[j].name,value.x, value.y, value.z, value.w);
+	            }
+            }
         }
 
 		static void WriteValue(StringBuilder builder, string name, float value)
@@ -214,16 +232,21 @@ namespace PlayerHappiness
                     }
                 }
             }
+
+            string fileName = Application.persistentDataPath + "/response.json";
+            Debug.LogFormat("Writing response to a file: {0}", fileName);
+            File.WriteAllText( fileName, ToJSON());
             
-            File.WriteAllText( Application.persistentDataPath + "/response.json", ToJSON());
-            
-            UnityWebRequest webRequest = UnityWebRequest.Post("https://hw19-player-happiness-api.unityads.unity3d.com/api/sessions", ToJSON());
+            UnityWebRequest webRequest = new UnityWebRequest("https://hw19-player-happiness-api.unityads.unity3d.com/api/sessions", "POST");
+            webRequest.uploadHandler = new UploadHandlerFile(fileName);
+            webRequest.downloadHandler = new DownloadHandlerBuffer();
             
             yield return webRequest.SendWebRequest();
 
             if (webRequest.isHttpError || webRequest.isNetworkError)
             {
                 Debug.LogErrorFormat("Failed to send JSON to server: {0}, {1}", webRequest.error, webRequest.responseCode);
+                Debug.LogErrorFormat(webRequest.downloadHandler.text);
             }
         }
     }

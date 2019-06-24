@@ -47,6 +47,8 @@ namespace PlayerHappiness.Sensors
             Handheld.PlayFullScreenMovie(recordedFilePath);
 #endif
 		}
+		
+		public string name => "screen";
 
         public void SetContext(ICollectorContext context)
         {

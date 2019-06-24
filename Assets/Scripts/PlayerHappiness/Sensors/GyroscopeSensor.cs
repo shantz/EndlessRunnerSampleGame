@@ -12,6 +12,8 @@ namespace PlayerHappiness.Sensors
             Input.gyro.updateInterval = updateInterval;
         }
         
+        public string name => "gyroscope";
+        
         public void SetContext(ICollectorContext context)
         {
             m_Context = context;

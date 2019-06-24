@@ -49,6 +49,8 @@ namespace PlayerHappiness.Sensors
             activity.Call("startDiscovery", new HeartbeatSensorListener(this));
 #endif
         }
+        
+        public string name => "heartbeat";
 
         public void SetContext(ICollectorContext context)
         {

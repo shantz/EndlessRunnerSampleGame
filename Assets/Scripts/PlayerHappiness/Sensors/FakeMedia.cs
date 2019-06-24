@@ -5,7 +5,9 @@ namespace PlayerHappiness.Sensors
     public class FakeMedia : ISensor
     {
         ICollectorContext m_Context;
-        
+
+        public string name => "fake";
+
         public void SetContext(ICollectorContext context)
         {
             m_Context = context;

@@ -7,6 +7,8 @@ namespace PlayerHappiness.Sensors
     {
         ICollectorContext m_Context;
         bool isActive;
+        
+        public string name => "touch";
 
         public void SetContext(ICollectorContext context)
         {
@@ -24,10 +26,15 @@ namespace PlayerHappiness.Sensors
                         using (var frame = m_Context.DoFrame())
                         {
                             Touch touch = Input.GetTouch(i);
-                            frame.Write($"c", touch.position);
+                            Vector2 pos = new Vector2(touch.position.x / Screen.width, touch.position.x / Screen.height);
+                            frame.Write($"c", pos);
                             if (Input.touchPressureSupported)
                             {
                                 frame.Write($"p", touch.pressure);
+                            }
+                            else
+                            {
+                                frame.Write($"p", 0.0f);
                             }
                         }
                     }
