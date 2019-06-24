@@ -162,7 +162,7 @@ PlayerSettings:
     Android: com.unity.trashdash
     Standalone: 
     Tizen: 
-    iPhone: 
+    iPhone: com.unity3d.hw19happiness
     tvOS: 
   buildNumber:
     iPhone: 0
@@ -464,7 +464,7 @@ PlayerSettings:
   enableInternalProfiler: 0
   logObjCUncaughtExceptions: 1
   enableCrashReportAPI: 0
-  cameraUsageDescription: 
+  cameraUsageDescription: WE WANT TO SEE YOUR HAPPY FACE!
   locationUsageDescription: 
   microphoneUsageDescription: 
   switchNetLibKey: 
