@@ -13,7 +13,10 @@ namespace PlayerHappiness.Sensors
 
         public void Start()
         {
-            
+            using(var frame = m_Context.DoFrame())
+            {
+                frame.Write("test", 0);
+            }
         }
 
         public void Stop()

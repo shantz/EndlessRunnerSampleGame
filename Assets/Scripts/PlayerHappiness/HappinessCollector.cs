@@ -92,10 +92,11 @@ namespace PlayerHappiness
                     }
                 
                     builder.Append("{");
-                    builder.AppendFormat("\"timestamp\":\"{0}\"", frame.timestamp);
+                    builder.AppendFormat("\"timestamp\":{0}", frame.timestamp);
                     WriteValues(builder, frame.floats);
-                    WriteValues(builder, frame.vector2s);
-                    WriteValues(builder, frame.vector3s);
+					WriteValues(builder, frame.ints);
+					WriteValues(builder, frame.vector2s);
+					WriteValues(builder, frame.vector3s);
                     WriteValues(builder, frame.quaternions);
                     builder.Append("}");
                 }
@@ -117,11 +118,61 @@ namespace PlayerHappiness
         {
             for (int j = 0; j < datas.Count; j++)
             {
-                builder.AppendFormat(",\"{0}\":\"{1}\"", datas[j].name, datas[j].value);
-            }
+				if (typeof(T).Equals(typeof(float)) || typeof(T).Equals(typeof(int)))
+					builder.AppendFormat(",\"{0}\": {1}", datas[j].name, datas[j].value);
+				else if(typeof(T).Equals(typeof(string)))
+					builder.AppendFormat(",\"{0}\": \"{1}\"", datas[j].name, datas[j].value);
+				else
+					builder.AppendFormat(",\"{0}\": {1}", datas[j].name, JsonUtility.ToJson(datas[j].value));
+			}
         }
-        
-        static IEnumerator UploadAll()
+
+		static void WriteValue(StringBuilder builder, string name, float value)
+		{
+			builder.AppendFormat(",\"{0}\":{1}", name, value);
+		}
+
+		static void WriteValue(StringBuilder builder, string name, Vector2 value)
+		{
+			builder.AppendFormat(",\"{0}\":", name);
+			builder.Append("{");
+			builder.AppendFormat("\"x\":{0},", value.x);
+			builder.AppendFormat("\"y\":{0}", value.y);
+			builder.Append("}");
+		}
+
+		static void WriteValue(StringBuilder builder, string name, Vector3 value)
+		{
+			builder.AppendFormat(",\"{0}\":", name);
+			builder.Append("{");
+			builder.AppendFormat("\"x\":{0},", value.x);
+			builder.AppendFormat("\"y\":{0},", value.y);
+			builder.AppendFormat("\"z\":{0}", value.z);
+			builder.Append("}");
+		}
+
+		static void WriteValue(StringBuilder builder, string name, Quaternion value)
+		{
+			builder.AppendFormat(",\"{0}\":", name);
+			builder.Append("{");
+			builder.AppendFormat("\"w\":{0},", value.w);
+			builder.AppendFormat("\"x\":{0},", value.x);
+			builder.AppendFormat("\"y\":{0},", value.y);
+			builder.AppendFormat("\"z\":{0}", value.z);
+			builder.Append("}");
+		}
+
+		static void WriteValue(StringBuilder builder, string name, string value)
+		{
+			builder.AppendFormat(",\"{0}\":\"{1}\"", name, value);
+		}
+
+		static void WriteValue<T>(StringBuilder builder, string name, T value)
+		{
+			builder.AppendFormat(",\"{0}\":{1}", name, value);
+		}
+
+		static IEnumerator UploadAll()
         {
             yield return null;
 
@@ -129,11 +180,12 @@ namespace PlayerHappiness
             {
                 foreach (var bytes in collectorContext.Media)
                 {
-                    UnityWebRequest uploadMedia = new UnityWebRequest("http://34.98.89.204/api/uploads", "POST");
+                    UnityWebRequest uploadMedia = new UnityWebRequest("http://hw19-player-happiness-api.unityads.unity3d.com/api/uploads", "POST");
 
                     uploadMedia.uploadHandler = new UploadHandlerRaw(bytes.Value);
+					uploadMedia.downloadHandler = new DownloadHandlerBuffer();
 
-                    yield return uploadMedia.SendWebRequest();
+					yield return uploadMedia.SendWebRequest();
 
                     if (uploadMedia.isHttpError || uploadMedia.isNetworkError)
                     {
@@ -141,12 +193,17 @@ namespace PlayerHappiness
                     }
                     else
                     {
-                        m_Urls[bytes.Key] = uploadMedia.downloadHandler.text;
-                    }
+						//m_Urls[bytes.Key] = uploadMedia.downloadHandler.text;
+						UploadResponse uploadResponse = JsonUtility.FromJson<UploadResponse>(uploadMedia.downloadHandler.text);
+						m_Urls[bytes.Key] = uploadResponse.downloadUrl;
+
+					}
                 }
             }
-            
-            UnityWebRequest webRequest = UnityWebRequest.Post("http://34.98.89.204/api/sessions", ToJSON());
+
+			Debug.Log(ToJSON());
+
+            UnityWebRequest webRequest = UnityWebRequest.Post("http://hw19-player-happiness-api.unityads.unity3d.com/api/sessions", ToJSON());
 
             yield return webRequest.SendWebRequest();
 
