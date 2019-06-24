@@ -11,11 +11,11 @@ namespace PlayerHappiness
         float m_StartTime;
         
         public List<FrameInfo> Frames;
-        public Dictionary<string, byte[]> Metadata;
+        public Dictionary<string, byte[]> Media;
         
         public CollectorContext(float startTime)
         {
-            Metadata = new Dictionary<string, byte[]>();
+            Media = new Dictionary<string, byte[]>();
             Frames = new List<FrameInfo>(120 * 1000 / 16);
             m_StartTime = startTime;
         }
@@ -27,9 +27,9 @@ namespace PlayerHappiness
             return new Frame(frameInfo);
         }
 
-        public void SetMetadata(string name, byte[] data)
+        public void SetMedia(string name, byte[] data)
         {
-            Metadata[name] = data;
+            Media[name] = data;
         }
     }
 }

@@ -1,7 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using PlayerHappiness.Sensors;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace PlayerHappiness
 {
@@ -10,6 +12,7 @@ namespace PlayerHappiness
         static bool m_Initialized;
         static List<ISensor> m_Sensors = new List<ISensor>();
         static List<CollectorContext> m_Contexts = new List<CollectorContext>();
+        static Dictionary<string, string> m_Urls = new Dictionary<string, string>();
 
         public static void Initialize()
         {
@@ -19,8 +22,10 @@ namespace PlayerHappiness
 
                 m_Sensors = new List<ISensor>();
                 m_Contexts = new List<CollectorContext>();
-
+                m_Urls = new Dictionary<string, string>();
+                
                 RegisterSensor(new GyroscopeSensor(0.5f));
+                RegisterSensor(new FakeMedia());
                 RegisterSensor(new TouchSensor());
             }
         }
@@ -33,6 +38,7 @@ namespace PlayerHappiness
         public static void Start()
         {
             m_Contexts.Clear();
+            m_Urls.Clear();
 
             float startTime = Time.realtimeSinceStartup;
 
@@ -51,8 +57,8 @@ namespace PlayerHappiness
             {
                 m_Sensors[i].Stop();
             }
-            
-            Debug.Log(ToJSON());
+
+            CoroutineHandler.StartStaticCoroutine(UploadAll());
         }
 
         public static string ToJSON()
@@ -78,9 +84,9 @@ namespace PlayerHappiness
                 builder.Append("[");
                 for (int j = 0; j < context.Frames.Count; j++)
                 {
-                    var frame = context.Frames[i];
+                    var frame = context.Frames[j];
                 
-                    if (i != 0)
+                    if (j != 0)
                     {
                         builder.Append(",");
                     }
@@ -94,9 +100,12 @@ namespace PlayerHappiness
                     builder.Append("}");
                 }
                 builder.Append("]");
-            
-                builder.Append("\"data\":");
                 builder.Append("}");
+            }
+
+            foreach (var url in m_Urls)
+            {
+                builder.AppendFormat(",\"{0}\":\"{1}\"",url.Key, url.Value);
             }
             
             builder.Append("}");
@@ -104,16 +113,46 @@ namespace PlayerHappiness
             return builder.ToString();
         }
 
-        public static void Upload()
-        {
-            
-        }
-        
         static void WriteValues<T>(StringBuilder builder, List<FrameData<T>> datas)
         {
-            foreach (var data in datas)
+            for (int j = 0; j < datas.Count; j++)
             {
-                builder.AppendFormat("\"{0}\":\"{1}\"", data.name, data.value);
+                builder.AppendFormat(",\"{0}\":\"{1}\"", datas[j].name, datas[j].value);
+            }
+        }
+        
+        static IEnumerator UploadAll()
+        {
+            yield return null;
+
+            foreach (var collectorContext in m_Contexts)
+            {
+                foreach (var bytes in collectorContext.Media)
+                {
+                    UnityWebRequest uploadMedia = new UnityWebRequest("http://34.98.89.204/api/uploads", "POST");
+
+                    uploadMedia.uploadHandler = new UploadHandlerRaw(bytes.Value);
+
+                    yield return uploadMedia.SendWebRequest();
+
+                    if (uploadMedia.isHttpError || uploadMedia.isNetworkError)
+                    {
+                        Debug.LogErrorFormat("Failed to send media {0} to server: {1}", bytes.Key,  uploadMedia.error);
+                    }
+                    else
+                    {
+                        m_Urls[bytes.Key] = uploadMedia.downloadHandler.text;
+                    }
+                }
+            }
+            
+            UnityWebRequest webRequest = UnityWebRequest.Post("http://34.98.89.204/api/sessions", ToJSON());
+
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.isHttpError || webRequest.isNetworkError)
+            {
+                Debug.LogErrorFormat("Failed to send JSON to server: {0}", webRequest.error);
             }
         }
     }
