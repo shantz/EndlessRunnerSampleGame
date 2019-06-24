@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using PlayerHappiness.Sensors;
 using UnityEngine;
@@ -25,7 +26,6 @@ namespace PlayerHappiness
                 m_Urls = new Dictionary<string, string>();
                 
                 RegisterSensor(new GyroscopeSensor(0.5f));
-                RegisterSensor(new FakeMedia());
                 RegisterSensor(new TouchSensor());
                 RegisterSensor(new HeartbeatSensor());
             }
@@ -181,7 +181,7 @@ namespace PlayerHappiness
             {
                 foreach (var bytes in collectorContext.Media)
                 {
-                    UnityWebRequest uploadMedia = new UnityWebRequest("http://hw19-player-happiness-api.unityads.unity3d.com/api/uploads", "POST");
+                    UnityWebRequest uploadMedia = new UnityWebRequest("https://hw19-player-happiness-api.unityads.unity3d.com/api/uploads", "POST");
 
                     uploadMedia.uploadHandler = new UploadHandlerRaw(bytes.Value);
 					uploadMedia.downloadHandler = new DownloadHandlerBuffer();
@@ -202,7 +202,7 @@ namespace PlayerHappiness
 
                 foreach (var file in collectorContext.MediaFile)
                 {
-                    UnityWebRequest uploadMedia = new UnityWebRequest("http://34.98.89.204/api/uploads", "POST");
+                    UnityWebRequest uploadMedia = new UnityWebRequest("http://hw19-player-happiness-api.unityads.unity3d.com/api/uploads", "POST");
 
                     uploadMedia.uploadHandler = new UploadHandlerFile(file.Value);
 
@@ -219,13 +219,15 @@ namespace PlayerHappiness
                 }
             }
             
-            UnityWebRequest webRequest = UnityWebRequest.Post("http://hw19-player-happiness-api.unityads.unity3d.com/api/sessions", ToJSON());
-                
+            File.WriteAllText( Application.persistentDataPath + "/response.json", ToJSON());
+            
+            UnityWebRequest webRequest = UnityWebRequest.Post("https://hw19-player-happiness-api.unityads.unity3d.com/api/sessions", ToJSON());
+            
             yield return webRequest.SendWebRequest();
 
             if (webRequest.isHttpError || webRequest.isNetworkError)
             {
-                Debug.LogErrorFormat("Failed to send JSON to server: {0}", webRequest.error);
+                Debug.LogErrorFormat("Failed to send JSON to server: {0}, {1}", webRequest.error, webRequest.responseCode);
             }
         }
     }
