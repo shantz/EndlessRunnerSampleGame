@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using PlayerHappiness;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ namespace DefaultNamespace
 
         void OnDisable()
         {
-            HappinessCollector.Stop();
+            HappinessCollector.Stop(new Dictionary<string, string>());
         }
     }
     

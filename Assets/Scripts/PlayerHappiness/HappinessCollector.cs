@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace PlayerHappiness
 {
     public static class HappinessCollector
@@ -12,7 +14,7 @@ namespace PlayerHappiness
             
         }
 
-        public static void Stop()
+        public static void Stop(Dictionary<string, string> metadata)
         {
             
         }

@@ -4,6 +4,5 @@ namespace PlayerHappiness
     {
         IFrame DoFrame();
         void SetMetadata(string name, byte[] data);
-
     }
 }
