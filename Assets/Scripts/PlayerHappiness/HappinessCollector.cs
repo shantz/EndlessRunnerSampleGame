@@ -19,6 +19,8 @@ namespace PlayerHappiness
         static float m_StartTime;
         static float m_EndTime;
 
+        static public bool isReady = true;
+
         public static void Initialize()
         {
             if (!m_Initialized)
@@ -60,6 +62,8 @@ namespace PlayerHappiness
 
         public static void Stop(Dictionary<string, string> metadata)
         {
+	        isReady = false;
+	        
 	        m_EndTime =  Time.realtimeSinceStartup;
 	        m_Promisess.Clear();
             for (var i = 0; i < m_Sensors.Count; i++)
@@ -265,6 +269,8 @@ namespace PlayerHappiness
                 Debug.LogErrorFormat("Failed to send JSON to server: {0}, {1}", webRequest.error, webRequest.responseCode);
                 Debug.LogError(webRequest.downloadHandler.text);
             }
+
+            isReady = true;
         }
     }
 }

@@ -4147,6 +4147,7 @@ MonoBehaviour:
   gameOverTheme: {fileID: 8300000, guid: 15e26518785848f4caf8ba236b4d0690, type: 3}
   miniLeaderboard: {fileID: 859562874}
   fullLeaderboard: {fileID: 1815696064}
+  runButton: {fileID: 1841838545}
   addButton: {fileID: 0}
 --- !u!114 &455205753
 MonoBehaviour:

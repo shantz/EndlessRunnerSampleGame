@@ -4,7 +4,8 @@ using UnityEngine.UI;
 using UnityEngine.Analytics;
 #endif
 using System.Collections.Generic;
- 
+using PlayerHappiness;
+
 /// <summary>
 /// state pushed on top of the GameManager when the player dies.
 /// </summary>
@@ -18,8 +19,9 @@ public class GameOverState : AState
 
 	public Leaderboard miniLeaderboard;
 	public Leaderboard fullLeaderboard;
-
-    public GameObject addButton;
+	
+	public Button runButton;
+	public GameObject addButton;
 
     public override void Enter(AState from)
     {
@@ -57,7 +59,7 @@ public class GameOverState : AState
 
     public override void Tick()
     {
-        
+	    runButton.interactable = HappinessCollector.isReady;
     }
 
 	public void OpenLeaderboard()

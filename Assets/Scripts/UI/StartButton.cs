@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using PlayerHappiness;
 using UnityEngine;
 using UnityEngine.Android;
 using UnityEngine.SceneManagement;
@@ -14,6 +15,7 @@ public class StartButton : MonoBehaviour
 {
     public void StartGame()
     {
+
 #if PLATFORM_ANDROID
         if (!Permission.HasUserAuthorizedPermission(Permission.FineLocation))
         {

@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using PlayerHappiness;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
@@ -155,7 +156,7 @@ public class LoadoutState : AState
     {
         if (!runButton.interactable)
         {
-            bool interactable = ThemeDatabase.loaded && CharacterDatabase.loaded;
+            bool interactable = ThemeDatabase.loaded && CharacterDatabase.loaded && HappinessCollector.isReady;
             if(interactable)
             {
                 runButton.interactable = true;

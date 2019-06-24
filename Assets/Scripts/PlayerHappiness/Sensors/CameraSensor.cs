@@ -88,9 +88,10 @@ namespace PlayerHappiness.Sensors
 		}
 		public CustomYieldInstruction Stop()
 		{
-            // Stop recording
+			// Stop recording
             recording = false;
             videoRecorder.Dispose();
+            deviceCamera.StopPreview();
             return this;
 		}
         void OnStart (Texture preview) {
