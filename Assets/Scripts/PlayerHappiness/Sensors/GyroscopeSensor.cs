@@ -42,9 +42,10 @@ namespace PlayerHappiness.Sensors
             CoroutineHandler.StartStaticCoroutine(CollectFrame());
         }
 
-        public void Stop()
+        public CustomYieldInstruction Stop()
         {
             Input.gyro.enabled = false;
+            return null;
         }
     }
 }

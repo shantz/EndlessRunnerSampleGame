@@ -12,7 +12,7 @@ using UnityEditor;
 
 namespace PlayerHappiness.Sensors
 {
-    public class CameraSensor : ISensor
+    public class CameraSensor : CustomYieldInstruction, ISensor
     {
         ICollectorContext m_Context;
 
@@ -28,6 +28,7 @@ namespace PlayerHappiness.Sensors
         private Texture cameraTexture;
 
         private bool recording;
+        bool m_IsReady;
 
         public string name => "facecam";
         public CameraSensor()
@@ -58,6 +59,8 @@ namespace PlayerHappiness.Sensors
 
         public void Start()
         {
+	        m_IsReady = false;
+	        
             deviceCamera.StartPreview(OnStart, OnFrame);
 			// Start recording
 			recordingClock = new RealtimeClock();
@@ -79,15 +82,17 @@ namespace PlayerHappiness.Sensors
 			Debug.Log("Saved recording to: " + path);
 			recordedFilePath = path;
 			m_Context.SetMetdataFile("CameraFile", path);
+			m_IsReady = true;
 #if UNITY_EDITOR
 			PlaybackRecording();
 #endif
 		}
-		public void Stop()
+		public CustomYieldInstruction Stop()
 		{
             // Stop recording
             recording = false;
             videoRecorder.Dispose();
+            return this;
 		}
         void OnStart (Texture preview) {
         // Display the camera preview
@@ -103,5 +108,6 @@ namespace PlayerHappiness.Sensors
             videoRecorder.CommitFrame(frame, recordingClock.Timestamp);
         }
 
+        public override bool keepWaiting => m_IsReady;
     }
 }

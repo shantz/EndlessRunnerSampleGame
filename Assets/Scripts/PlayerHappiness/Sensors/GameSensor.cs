@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace PlayerHappiness.Sensors
 {
     public interface IGameSensor
@@ -24,9 +26,10 @@ namespace PlayerHappiness.Sensors
             instance = this;
         }
 
-        public void Stop()
+        public CustomYieldInstruction Stop()
         {
             instance = m_FakeImpl;
+            return null;
         }
 
         class FakeGameSensor : IGameSensor {

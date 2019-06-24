@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace PlayerHappiness
 {
@@ -8,6 +9,6 @@ namespace PlayerHappiness
         
         void SetContext(ICollectorContext context);
         void Start();
-        void Stop();
+        CustomYieldInstruction Stop();
     }
 }

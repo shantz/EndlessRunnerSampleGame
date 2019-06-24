@@ -1,4 +1,5 @@
 using System.Text;
+using UnityEngine;
 
 namespace PlayerHappiness.Sensors
 {
@@ -21,9 +22,10 @@ namespace PlayerHappiness.Sensors
             }
         }
 
-        public void Stop()
+        public CustomYieldInstruction Stop()
         {
             m_Context.SetMedia("test", UTF8Encoding.UTF8.GetBytes("THIS IS A TEST DATA!"));
+            return null;
         }
     }
 }

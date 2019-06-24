@@ -50,9 +50,10 @@ namespace PlayerHappiness.Sensors
             CoroutineHandler.StartStaticCoroutine(CollectFrame());
         }
 
-        public void Stop()
+        public CustomYieldInstruction Stop()
         {
             isActive = false;
+            return null;
         }
     }
 }

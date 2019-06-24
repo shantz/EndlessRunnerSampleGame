@@ -65,9 +65,10 @@ namespace PlayerHappiness.Sensors
             isActive = true;
         }
 
-        public void Stop()
+        public CustomYieldInstruction Stop()
         {
             isActive = false;
+            return null;
         }
     }
 }

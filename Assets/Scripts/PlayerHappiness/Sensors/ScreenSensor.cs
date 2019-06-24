@@ -10,7 +10,7 @@ using UnityEditor;
 
 namespace PlayerHappiness.Sensors
 {
-    public class ScreenSensor : ISensor
+    public class ScreenSensor : CustomYieldInstruction, ISensor
     {
         ICollectorContext m_Context;
 
@@ -27,6 +27,7 @@ namespace PlayerHappiness.Sensors
 		private CameraInput cameraInput;
 		private AudioInput audioInput;
 		public string recordedFilePath;
+		bool m_IsReady;
 
 		public ScreenSensor()
         {
@@ -80,12 +81,14 @@ namespace PlayerHappiness.Sensors
 			Debug.Log("Saved recording to: " + path);
 			recordedFilePath = path;
 			m_Context.SetMetdataFile("VideoFile", path);
+			m_IsReady = true;
 #if UNITY_EDITOR
 			PlaybackRecording();
 #endif
 		}
 		private void StartMicrophone()
 		{
+			m_IsReady = false;
 #if !UNITY_WEBGL || UNITY_EDITOR // No `Microphone` API on WebGL :(
 			// Create a microphone clip
 			microphoneSource.clip = Microphone.Start(null, true, 60, 48000);
@@ -97,7 +100,7 @@ namespace PlayerHappiness.Sensors
 #endif
 		}
 
-		public void Stop()
+		public CustomYieldInstruction Stop()
 		{
 			// Stop the recording inputs
 			if (recordMicrophone)
@@ -108,6 +111,8 @@ namespace PlayerHappiness.Sensors
 			cameraInput.Dispose();
 			// Stop recording
 			videoRecorder.Dispose();
+
+			return this;
 		}
 
 		private void StopMicrophone()
@@ -118,5 +123,6 @@ namespace PlayerHappiness.Sensors
 #endif
 		}
 
+		public override bool keepWaiting => m_IsReady;
     }
 }
