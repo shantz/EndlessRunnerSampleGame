@@ -79,9 +79,6 @@ namespace PlayerHappiness
                 var context = m_Contexts[i];
 
                 builder.AppendFormat("\"{0}\":", sensor.GetType().Name);
-
-                builder.Append("{");
-                builder.Append("\"frames\":");
                 builder.Append("[");
                 for (int j = 0; j < context.Frames.Count; j++)
                 {
@@ -93,7 +90,7 @@ namespace PlayerHappiness
                     }
                 
                     builder.Append("{");
-                    builder.AppendFormat("\"timestamp\":{0}", frame.timestamp);
+                    builder.AppendFormat("\"ts\":{0}", frame.timestamp);
                     WriteValues(builder, frame.floats);
 					WriteValues(builder, frame.ints);
 					WriteValues(builder, frame.vector2s);
@@ -102,7 +99,6 @@ namespace PlayerHappiness
                     builder.Append("}");
                 }
                 builder.Append("]");
-                builder.Append("}");
             }
 
             foreach (var url in m_Urls)
