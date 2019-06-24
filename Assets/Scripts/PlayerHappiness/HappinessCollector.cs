@@ -25,6 +25,7 @@ namespace PlayerHappiness
                 m_Urls = new Dictionary<string, string>();
                 
                 RegisterSensor(new GyroscopeSensor(0.5f));
+                RegisterSensor(new FakeMedia());
             }
         }
         
