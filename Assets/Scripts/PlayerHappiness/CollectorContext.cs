@@ -31,5 +31,11 @@ namespace PlayerHappiness
         {
             Media[name] = data;
         }
+
+	    public void SetMetdataFile(string name, string path)
+	    {
+
+	    }
+
     }
 }

@@ -78,6 +78,9 @@ namespace PlayerHappiness.Sensors
 			Debug.Log("Saved recording to: " + path);
 			recordedFilePath = path;
 			m_Context.SetMetdataFile("VideoFile", path);
+#if UNITY_EDITOR
+			PlaybackRecording();
+#endif
 		}
 		private void StartMicrophone()
 		{
