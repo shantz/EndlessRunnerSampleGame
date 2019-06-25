@@ -21,7 +21,7 @@ namespace PlayerHappiness.Sensors
             
             void onReady()
             {
-                CoroutineHandler.RunOnMainThread(() => GameObject.Find("HearBeatSensor").SetActive(false));
+                CoroutineHandler.RunOnMainThread(() => GameObject.Find("HearBeatSensor")?.SetActive(false));
             }
             
             void onHeartbeat(double rate)
@@ -31,7 +31,7 @@ namespace PlayerHappiness.Sensors
 
             void onDisconnected()
             {
-                CoroutineHandler.RunOnMainThread(() => GameObject.Find("HearBeatSensor").SetActive(true));
+                CoroutineHandler.RunOnMainThread(() => GameObject.Find("HearBeatSensor")?.SetActive(true));
             }
         }
 #elif UNITY_IOS

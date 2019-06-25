@@ -33,8 +33,8 @@ namespace PlayerHappiness.Sensors
         {
 			recordingClock = new RealtimeClock();
 
-			videoHeight = Screen.height;
-			videoWidth = Screen.width;
+			videoHeight = Screen.height / 2;
+			videoWidth = Screen.width / 2;
         }
 
 		public void PlaybackRecording()
@@ -67,10 +67,12 @@ namespace PlayerHappiness.Sensors
 			videoRecorder = new MP4Recorder(
 				videoWidth,
 				videoHeight,
-				30,
+				15,
 				recordMicrophone ? AudioSettings.outputSampleRate : 0,
 				recordMicrophone ? (int)AudioSettings.speakerMode : 0,
-				FileLocationCB
+				FileLocationCB,
+				"gamevideo.mp4",
+				(int)(480 * 540 * 11.4f)
 			);
 			// Create recording inputs
 			cameraInput = new CameraInput(videoRecorder, recordingClock, Camera.main);
