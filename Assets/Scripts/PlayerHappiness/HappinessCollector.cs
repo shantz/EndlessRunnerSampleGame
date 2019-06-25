@@ -40,6 +40,7 @@ namespace PlayerHappiness
                 RegisterSensor(new GameSensor());
                 RegisterSensor(new CameraSensor());
                 RegisterSensor(new BrainSensor());
+                RegisterSensor(new ScreenSensor());
             }
         }
         
