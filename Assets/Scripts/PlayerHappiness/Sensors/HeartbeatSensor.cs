@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using System.Runtime.InteropServices;
 
 namespace PlayerHappiness.Sensors
 {
@@ -33,7 +34,45 @@ namespace PlayerHappiness.Sensors
                 CoroutineHandler.RunOnMainThread(() => GameObject.Find("HearBeatSensor").SetActive(true));
             }
         }
-        #endif
+#elif UNITY_IOS
+        [DllImport("__Internal")]
+        private static extern void trash_dash_init_heartbeat();
+        [DllImport("__Internal")]
+        private static extern void trash_dash_destroy_heartbeat();
+
+        public class HeartbeatSensorListener {
+            readonly HeartbeatSensor sensor;
+            public HeartbeatSensorListener(HeartbeatSensor sensor)
+            {
+                GameObject.Find("HearBeatSensor").GetComponent<HeartRateBridge>().listener = this;
+                this.sensor = sensor;
+            }
+
+            public void onReady()
+            {
+                Debug.Log("Heartreate Sensor ready");
+            }
+
+            public void onHeartbeat(double rate) {
+                if (sensor.isActive)
+                {
+                    using (var frame = this.sensor.m_Context.DoFrame())
+                    {
+                        frame.Write("r", (float)rate);
+                    }
+                }
+            }
+
+            public void onDisconnected()
+            {
+                Debug.Log("Heartreate Sensor disconnected");
+            }
+
+            public void onShutdown() {
+                trash_dash_destroy_heartbeat();
+            }
+        }
+#endif
 
         public HeartbeatSensor()
         {
@@ -45,6 +84,11 @@ namespace PlayerHappiness.Sensors
                 var player = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
                 var activity = player.GetStatic<AndroidJavaObject>("currentActivity");
                 activity.Call("startDiscovery", new HeartbeatSensorListener(this));
+            }
+#elif UNITY_IOS
+            if (!Application.isEditor)
+            {
+                trash_dash_init_heartbeat();
             }
 #endif
         }
