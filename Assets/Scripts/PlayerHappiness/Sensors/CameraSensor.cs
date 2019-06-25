@@ -17,8 +17,8 @@ namespace PlayerHappiness.Sensors
         ICollectorContext m_Context;
 
 		[Header("Recording")]
-		public int videoWidth = 1280;
-		public int videoHeight = 720;
+		public int videoWidth = 360;
+		public int videoHeight = 640;
 
 		private MP4Recorder videoRecorder;
 		private IClock recordingClock;
@@ -34,9 +34,7 @@ namespace PlayerHappiness.Sensors
         public CameraSensor()
         {
 			recordingClock = new RealtimeClock();
-
-			videoHeight = Screen.height;
-			videoWidth = Screen.width;
+			
             deviceCamera = DeviceCamera.FrontCamera;
         }
 
@@ -66,11 +64,12 @@ namespace PlayerHappiness.Sensors
 			videoRecorder = new MP4Recorder(
 				videoWidth,
 				videoHeight,
-				30,
+				15,
 				0,
 				0,
 				FileLocationCB,
-				"facecam.mp4"
+				"facecam.mp4",
+				(int)(480 * 540 * 11.4f)
 			);
 			
 			deviceCamera.StartPreview(OnStart, OnFrame);
