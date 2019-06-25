@@ -81,7 +81,7 @@ namespace PlayerHappiness.Sensors
 		{
 			Debug.Log("Saved recording to: " + path);
 			recordedFilePath = path;
-			m_Context.SetMetdataFile("VideoFile", path);
+			m_Context.SetMetdataFile("screenVideoUrl", path);
 			m_IsReady = true;
 #if UNITY_EDITOR
 			PlaybackRecording();
