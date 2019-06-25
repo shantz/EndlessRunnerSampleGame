@@ -15,7 +15,7 @@ namespace PlayerHappiness
         
         static List<ISensor> m_Sensors = new List<ISensor>();
         
-        static List<CollectorContext> m_Contexts = new List<CollectorContext>();
+        static List<FastCollectorContext> m_Contexts = new List<FastCollectorContext>();
         static Dictionary<string, string> m_Urls = new Dictionary<string, string>();
         static List<CustomYieldInstruction> m_Promisess = new List<CustomYieldInstruction>();
         
@@ -26,12 +26,12 @@ namespace PlayerHappiness
 
         public static void Initialize()
         {
-            if (!m_Initialized)
+	        if (!m_Initialized)
             {
                 m_Initialized = true;
 
                 m_Sensors = new List<ISensor>();
-                m_Contexts = new List<CollectorContext>();
+                m_Contexts = new List<FastCollectorContext>();
                 m_Urls = new Dictionary<string, string>();
                 
                 RegisterSensor(new GyroscopeSensor(0.5f));
@@ -57,7 +57,7 @@ namespace PlayerHappiness
 
             for (var i = 0; i < m_Sensors.Count; i++)
             {
-                m_Contexts.Add(new CollectorContext(m_StartTime));
+                m_Contexts.Add(new FastCollectorContext(m_StartTime));
                 m_Sensors[i].SetContext(m_Contexts[i]);
                 
                 m_Sensors[i].Start();
@@ -66,6 +66,7 @@ namespace PlayerHappiness
 
         public static void Stop(Dictionary<string, string> metadata)
         {
+	        Debug.Log("*********************** Stop");
 	        isReady = false;
 	        
 	        m_EndTime =  Time.realtimeSinceStartup;
@@ -80,7 +81,7 @@ namespace PlayerHappiness
 
         public static string ToJSON()
         {
-            StringBuilder builder = new StringBuilder();
+	        StringBuilder builder = new StringBuilder();
 
             builder.Append("{");
             
@@ -107,12 +108,18 @@ namespace PlayerHappiness
                 
                     builder.Append("{");
                     builder.AppendFormat("\"ts\":{0}", (int)Math.Round(frame.timestamp * 1000));
-                    WriteValues(builder, frame.floats);
-					WriteValues(builder, frame.ints);
-					WriteValues(builder, frame.vector2s);
-					WriteValues(builder, frame.vector3s);
-                    WriteValues(builder, frame.quaternions);
-                    WriteValues(builder, frame.strings);
+                    //WriteValues(builder, frame.floats);
+					//WriteValues(builder, frame.ints);
+					//WriteValues(builder, frame.vector2s);
+					//WriteValues(builder, frame.vector3s);
+                   // WriteValues(builder, frame.quaternions);
+                   // WriteValues(builder, frame.strings);
+                    WriteValues(builder, context.floats, frame.startFloats, frame.lengthFloats);
+                    WriteValues(builder, context.ints, frame.startInts, frame.lengthInts);
+                    WriteValues(builder, context.vector2s, frame.startVector2s, frame.lengthVector2s);
+                    WriteValues(builder, context.vector3s, frame.startVector3s, frame.lengthVector3s);
+                    WriteValues(builder, context.quaternions, frame.startQuaternions, frame.lengthQuaternions);
+                    WriteValues(builder, context.strings, frame.startStrings, frame.lengthStrings);
                     builder.Append("}");
                 }
                 builder.Append("]");
@@ -129,35 +136,44 @@ namespace PlayerHappiness
             
             return builder.ToString();
         }
+        
+        static void WriteValues<T>(StringBuilder builder, List<FrameData<T>> datas, int starts, int length)
+        {
+	        for (int j = starts; j < starts + length; j++)
+	        {
+		        if (typeof(T).Equals(typeof(float)) || typeof(T).Equals(typeof(int)))
+		        {
+			        builder.AppendFormat(",\"{0}\": {1}", datas[j].name, datas[j].value);
+		        }
+		        else if(typeof(T).Equals(typeof(string)))
+		        {
+			        builder.AppendFormat(",\"{0}\": \"{1}\"", datas[j].name, datas[j].value);
+		        }
+		        else if (typeof(T).Equals(typeof(Vector2)))
+		        {
+			        Vector2 value = (Vector2)(object)datas[j].value;
+			        builder.AppendFormat(",\"{0}\": [{1},{2}]", datas[j].name,value.x, value.y);
+		        }
+		        else if (typeof(T).Equals(typeof(Vector3)))
+		        {
+			        Vector3 value = (Vector3)(object)datas[j].value;
+			        builder.AppendFormat(",\"{0}\": [{1},{2},{3}]", datas[j].name,value.x, value.y, value.z);
+		        }
+		        else if (typeof(T).Equals(typeof(Quaternion)))
+		        {
+			        Quaternion value = (Quaternion)(object)datas[j].value;
+			        builder.AppendFormat(",\"{0}\": [{1},{2},{3},{4}]", datas[j].name,value.x, value.y, value.z, value.w);
+		        }
+		        else
+		        {
+			        throw new Exception();
+		        }
+	        }
+        }
 
         static void WriteValues<T>(StringBuilder builder, List<FrameData<T>> datas)
         {
-	        for (int j = 0; j < datas.Count; j++)
-            {
-	            if (typeof(T).Equals(typeof(float)) || typeof(T).Equals(typeof(int)))
-	            {
-		            builder.AppendFormat(",\"{0}\": {1}", datas[j].name, datas[j].value);
-	            }
-	            else if(typeof(T).Equals(typeof(string)))
-	            {
-					builder.AppendFormat(",\"{0}\": \"{1}\"", datas[j].name, datas[j].value);
-	            }
-				else if (typeof(T).Equals(typeof(Vector2)))
-	            {
-		            Vector2 value = (Vector2)(object)datas[j].value;
-		            builder.AppendFormat(",\"{0}\": [{1},{2}]", datas[j].name,value.x, value.y);
-	            }
-	            else if (typeof(T).Equals(typeof(Vector3)))
-	            {
-		            Vector3 value = (Vector3)(object)datas[j].value;
-		            builder.AppendFormat(",\"{0}\": [{1},{2},{3}]", datas[j].name,value.x, value.y, value.z);
-	            }
-	            else if (typeof(T).Equals(typeof(Quaternion)))
-	            {
-		            Quaternion value = (Quaternion)(object)datas[j].value;
-		            builder.AppendFormat(",\"{0}\": [{1},{2},{3},{4}]", datas[j].name,value.x, value.y, value.z, value.w);
-	            }
-            }
+	        WriteValues(builder, datas, 0, datas.Count);
         }
 
 		static void WriteValue(StringBuilder builder, string name, float value)
@@ -207,13 +223,13 @@ namespace PlayerHappiness
 
 		static IEnumerator UploadAll()
         {
-            yield return null;
+	        yield return null;
 
             foreach (var customYieldInstruction in m_Promisess)
             {
 	            yield return customYieldInstruction;
             }
-            
+
             for (var i = 0; i < m_Sensors.Count; i++)
             {
 	            m_Sensors[i].SetContext(null);
