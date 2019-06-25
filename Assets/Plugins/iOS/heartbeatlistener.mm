@@ -95,7 +95,7 @@
         [self.discoveredDevices addObject:deviceInformation];
         [self connect:deviceInformation];
 
-        NSLog(@"Got device");
+        NSLog(@"Got device - %@", deviceInformation.name);
     }
 }
 
