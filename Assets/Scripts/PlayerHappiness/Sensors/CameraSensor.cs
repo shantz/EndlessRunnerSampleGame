@@ -98,6 +98,10 @@ namespace PlayerHappiness.Sensors
         void OnStart (Texture preview) {
         // Display the camera preview
             cameraTexture =  preview;
+            GameObject fooImage = GameObject.Find("FooImage");
+            if (fooImage != null) {
+                fooImage.GetComponent<RawImage>().texture = preview;
+            }
         }
         
         void OnFrame () {

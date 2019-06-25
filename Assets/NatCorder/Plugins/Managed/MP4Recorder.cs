@@ -50,6 +50,9 @@ namespace NatCorder {
                 case RuntimePlatform.WindowsPlayer:
                 case RuntimePlatform.IPhonePlayer: {
                     var recordingPath = Path.Combine(recordingDirectory, recordingFilename);
+                    if (File.Exists(recordingPath)) {
+                        File.Delete(recordingPath);
+                    }
                     var nativeRecorder = MediaRecorderBridge.CreateMP4Recorder(videoWidth, videoHeight, videoFramerate, videoBitrate, videoKeyframeInterval, audioSampleRate, audioChannelCount);
                     this.internalRecorder = new MediaRecorderiOS(nativeRecorder, videoWidth, videoHeight, readbackFormat, recordingPath, recordingCallback);
                     break;
