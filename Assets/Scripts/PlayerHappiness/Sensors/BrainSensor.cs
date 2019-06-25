@@ -51,6 +51,11 @@ namespace PlayerHappiness.Sensors
             {
                 while (reciever.hasWaitingMessages())
                 {
+                    if (!s_Connected)
+                    {
+                        Debug.Log("EEG is on");
+                    }
+                    
                     s_Connected = true;
                     
                     OSCMessage msg = reciever.getNextMessage();

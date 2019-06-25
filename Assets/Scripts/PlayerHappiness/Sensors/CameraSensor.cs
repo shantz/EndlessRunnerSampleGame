@@ -71,7 +71,8 @@ namespace PlayerHappiness.Sensors
 				"facecam.mp4",
 				(int)(480 * 540 * 11.4f)
 			);
-			
+
+			deviceCamera.Framerate = 15;
 			deviceCamera.StartPreview(OnStart, OnFrame);
         }
 

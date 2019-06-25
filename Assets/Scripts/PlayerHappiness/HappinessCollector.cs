@@ -130,7 +130,7 @@ namespace PlayerHappiness
                 builder.AppendFormat(",\"{0}\":\"{1}\"",url.Key, url.Value);
             }
             
-            builder.AppendFormat(",\"Length\":{0}", (int)Math.Round((m_EndTime - m_StartTime)) * 1000);
+            builder.AppendFormat(",\"length\":{0}", (int)Math.Round((m_EndTime - m_StartTime) * 1000));
             
             builder.Append("}");
             

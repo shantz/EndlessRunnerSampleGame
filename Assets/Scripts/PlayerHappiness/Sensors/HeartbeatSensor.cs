@@ -1,10 +1,12 @@
+using System.Collections;
 using UnityEngine;
 
 namespace PlayerHappiness.Sensors
 {
     public class HeartbeatSensor : ISensor
     {
-        public volatile bool isActive = false;
+        public bool isActive = false;
+        public volatile float rate;
         ICollectorContext m_Context;
 
 #if UNITY_ANDROID
@@ -23,13 +25,7 @@ namespace PlayerHappiness.Sensors
             
             void onHeartbeat(double rate)
             {
-                if (sensor.isActive)
-                {
-                    using (var frame = this.sensor.m_Context.DoFrame())
-                    {
-                        frame.Write("r", (float)rate);
-                    }
-                }
+                this.sensor.rate = (float)rate;
             }
 
             void onDisconnected()
@@ -63,12 +59,27 @@ namespace PlayerHappiness.Sensors
         public void Start()
         {
             isActive = true;
+
+            CoroutineHandler.StartStaticCoroutine(Update());
         }
 
         public CustomYieldInstruction Stop()
         {
             isActive = false;
             return null;
+        }
+
+        IEnumerator Update()
+        {
+            while (isActive)
+            {
+                using (var frame = m_Context.DoFrame())
+                {
+                    frame.Write("r", rate);
+                }
+                
+                yield return new WaitForSeconds(0.25f);
+            }
         }
     }
 }
