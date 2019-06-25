@@ -173,7 +173,7 @@ namespace UnityOSC
 		/// </summary>
 		private void Receive()
 		{
-			IPEndPoint ip = null;
+			IPEndPoint ip = new IPEndPoint(IPAddress.Any, _localPort);
 			
 			try
 			{
@@ -181,7 +181,7 @@ namespace UnityOSC
 
 				if(bytes != null && bytes.Length > 0)
 				{
-                    OSCPacket packet = OSCPacket.Unpack(bytes);
+					OSCPacket packet = OSCPacket.Unpack(bytes);
 
                     _lastReceivedPacket = packet;
 

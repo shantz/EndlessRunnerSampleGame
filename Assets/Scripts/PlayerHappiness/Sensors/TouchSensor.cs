@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace PlayerHappiness.Sensors
 {
-    public class TouchSensor : ISensor
+    class TouchSensor : ISensor
     {
         ICollectorContext m_Context;
         bool isActive;
@@ -28,14 +28,7 @@ namespace PlayerHappiness.Sensors
                             Touch touch = Input.GetTouch(i);
                             Vector2 pos = new Vector2(touch.position.x / Screen.width, touch.position.x / Screen.height);
                             frame.Write($"c", pos);
-                            //if (Input.touchPressureSupported)
-                            {
-                                frame.Write($"p", touch.pressure);
-                            }
-                            //else
-                            {
-                           //     frame.Write($"p", 0.0f);
-                            }
+                            frame.Write($"p", touch.pressure);
                         }
                     }
                 }

@@ -10,7 +10,7 @@ using UnityEditor;
 
 namespace PlayerHappiness.Sensors
 {
-    public class ScreenSensor : CustomYieldInstruction, ISensor
+	class ScreenSensor : CustomYieldInstruction, ISensor
     {
         ICollectorContext m_Context;
 

@@ -151,14 +151,6 @@ public class TrackManager : MonoBehaviour
 
     IEnumerator WaitToStart()
     {
-        int attempts = 0;
-        
-        while (!BrainSensor.s_Connected && attempts < 5)
-        {
-            yield return new WaitForSecondsRealtime(1);
-            attempts++;
-        }
-        
         characterController.character.animator.Play(s_StartHash);
         float length = k_CountdownToStartLength;
         m_TimeToStart = length;

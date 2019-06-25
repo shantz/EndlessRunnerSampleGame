@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace PlayerHappiness
 {
-    public class Frame : IFrame
+    class Frame : IFrame
     {
         private FrameInfo m_FrameInfo;
 

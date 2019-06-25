@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace PlayerHappiness
 {
-    public class CollectorContext : ICollectorContext
+    class CollectorContext : ICollectorContext
     {
         float m_StartTime;
         
@@ -36,7 +36,7 @@ namespace PlayerHappiness
 
     }
     
-    public struct FastFrameInfo
+    struct FastFrameInfo
     {
         public float timestamp;
         public int startFloats;
@@ -76,7 +76,7 @@ namespace PlayerHappiness
         }
     }
     
-    public class FastCollectorContext : ICollectorContext
+    class FastCollectorContext : ICollectorContext
     {
         float m_StartTime;
         
@@ -119,7 +119,7 @@ namespace PlayerHappiness
 
     }
 
-    public class FastFrame : IFrame {
+    class FastFrame : IFrame {
         readonly FastCollectorContext fastCollectorContext;
         readonly int index;
 

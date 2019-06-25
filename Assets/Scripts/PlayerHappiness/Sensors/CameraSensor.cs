@@ -12,7 +12,7 @@ using UnityEditor;
 
 namespace PlayerHappiness.Sensors
 {
-    public class CameraSensor : CustomYieldInstruction, ISensor
+	class CameraSensor : CustomYieldInstruction, ISensor
     {
         ICollectorContext m_Context;
 

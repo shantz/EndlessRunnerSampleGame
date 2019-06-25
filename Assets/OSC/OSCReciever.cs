@@ -100,5 +100,25 @@ namespace UnityOSC
         {
             Close();
         }
+
+        public OSCMessage getLastMessage(string address)
+        {
+            lock (_queue)
+            {
+                OSCMessage lastMessage = null;
+                
+                while (_queue.Count > 0)
+                {
+                    var message = _queue.Dequeue();
+
+                    if (message.Address == address)
+                    {
+                        lastMessage = message;
+                    }
+                }
+
+                return lastMessage;
+            }
+        }
     }
 }

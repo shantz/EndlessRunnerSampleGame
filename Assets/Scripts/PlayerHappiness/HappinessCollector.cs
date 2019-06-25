@@ -25,11 +25,17 @@ namespace PlayerHappiness
 
         public static bool isReady = true;
 
+        public static GameObject s_Object;
+
         public static void Initialize()
         {
 	        if (!m_Initialized)
             {
                 m_Initialized = true;
+                
+                s_Object = new GameObject("Debug UI");
+                s_Object.AddComponent<DebugUI>();
+                GameObject.DontDestroyOnLoad(s_Object);
 
                 m_Sensors = new List<ISensor>();
                 m_Contexts = new List<FastCollectorContext>();
@@ -259,22 +265,26 @@ namespace PlayerHappiness
 			int attempt = 0;
 			while (attempt < MaxAttempts)
 			{
+				Debug.LogFormat("Attempt #{0} to upload JSON file...", attempt);
+				
 				attempt++;
 
-				UnityWebRequest webRequest = new UnityWebRequest("https://hw19-player-happiness-api.unityads.unity3d.com/api/sessions", "POST");
-				webRequest.uploadHandler = new UploadHandlerFile(fileName);
-				webRequest.downloadHandler = new DownloadHandlerBuffer();
-
-				yield return webRequest.SendWebRequest();
-
-				if (webRequest.isHttpError || webRequest.isNetworkError)
+				using (UnityWebRequest webRequest = new UnityWebRequest("https://hw19-player-happiness-api.unityads.unity3d.com/api/sessions", "POST"))
 				{
-					Debug.LogErrorFormat("Failed to send JSON to server: {0}, {1}", webRequest.error, webRequest.responseCode);
-					Debug.LogError(webRequest.downloadHandler.text);
-				}
-				else
-				{
-					break;
+					webRequest.uploadHandler = new UploadHandlerFile(fileName);
+					webRequest.downloadHandler = new DownloadHandlerBuffer();
+
+					yield return webRequest.SendWebRequest();
+
+					if (webRequest.isHttpError || webRequest.isNetworkError)
+					{
+						Debug.LogErrorFormat("Failed to send JSON to server: {0}, {1}", webRequest.error, webRequest.responseCode);
+						Debug.LogError(webRequest.downloadHandler.text);
+					}
+					else
+					{
+						break;
+					}
 				}
 			}
 		}
@@ -285,6 +295,7 @@ namespace PlayerHappiness
 			while (attempt < MaxAttempts)
 			{
 				attempt++;
+				Debug.LogFormat("Attempt #{0} to upload file {1}...", attempt, file.Key);
 				
 				using (UnityWebRequest uploadMedia = new UnityWebRequest("https://hw19-player-happiness-api.unityads.unity3d.com/api/uploads", "POST"))
 				{

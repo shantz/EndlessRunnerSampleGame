@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace PlayerHappiness
 {
-    public struct FrameData<T>
+    struct FrameData<T>
     {
         public string name;
         public T value;
     }
     
-    public class FrameInfo
+    class FrameInfo
     {
         public float timestamp;
         public List<FrameData<float>> floats;

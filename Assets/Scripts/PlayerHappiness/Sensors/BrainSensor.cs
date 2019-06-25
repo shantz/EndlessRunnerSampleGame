@@ -5,11 +5,11 @@ using UnityOSC;
 
 namespace PlayerHappiness.Sensors
 {
-    public class BrainSensor : ISensor
+    class BrainSensor : ISensor
     {
         private OSCReciever reciever;
-
-        public static bool s_Connected = false;
+        
+        public static int currentFrame = 0;
 
         public int port = 8338;
         bool isActive;
@@ -20,6 +20,13 @@ namespace PlayerHappiness.Sensors
         public BrainSensor()
         {
             reciever = new OSCReciever();
+            if (!Application.isEditor)
+            {
+                reciever.Open(port);
+                isActive = true;
+
+                CoroutineHandler.StartStaticCoroutine(Update());
+            }
         }
         
         public void SetContext(ICollectorContext context)
@@ -29,19 +36,23 @@ namespace PlayerHappiness.Sensors
 
         public void Start()
         {
-            s_Connected = false;
-            isActive = true;
+            if (Application.isEditor)
+            {
+                reciever.Open(port);
+                isActive = true;
 
-            CoroutineHandler.StartStaticCoroutine(Update());
-            
-            reciever.Open(port);
+                CoroutineHandler.StartStaticCoroutine(Update());
+            }
         }
 
         public CustomYieldInstruction Stop()
         {
-            reciever.Close();
-            s_Connected = false;
-            isActive = false;
+            if (Application.isEditor)
+            {
+                reciever.Close();
+                isActive = false;
+            }
+            
             return null;
         }
         
@@ -49,32 +60,27 @@ namespace PlayerHappiness.Sensors
         {
             while (isActive)
             {
-                while (reciever.hasWaitingMessages())
+                if (reciever.hasWaitingMessages())
                 {
-                    if (!s_Connected)
-                    {
-                        Debug.Log("EEG is on");
-                    }
-                    
-                    s_Connected = true;
-                    
-                    OSCMessage msg = reciever.getNextMessage();
+                    OSCMessage msg = reciever.getLastMessage("Muse-2FCA/notch_filtered_eeg");
 
-                    if (msg.Address == "Muse-2FCA/notch_filtered_eeg")
+                    if (msg != null)
                     {
-                        using (var frame = m_Context.DoFrame())
+                        if (m_Context != null)
                         {
-                            frame.Write("d", (float)msg.Data[0]);
-                            frame.Write("t", (float)msg.Data[1]);
-                            frame.Write("a", (float)msg.Data[2]);
-                            frame.Write("b", (float)msg.Data[3]);
-                            //frame.Write("g", (float)msg.Data[4]);
-                            //frame.Write("m", (float)msg.Data[5]);
+                            using (var frame = m_Context.DoFrame())
+                            {
+                                frame.Write("d", (float)msg.Data[0]);
+                                frame.Write("t", (float)msg.Data[1]);
+                                frame.Write("a", (float)msg.Data[2]);
+                                frame.Write("b", (float)msg.Data[3]);
+                            }
                         }
-                        break;
+                        
+                        currentFrame++;
                     }
                 }
-
+                
                 yield return null;
             }
         }

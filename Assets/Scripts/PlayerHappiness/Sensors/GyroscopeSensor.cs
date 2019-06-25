@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace PlayerHappiness.Sensors
 {
-    public class GyroscopeSensor : ISensor
+    class GyroscopeSensor : ISensor
     {
         ICollectorContext m_Context;
         

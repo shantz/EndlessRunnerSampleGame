@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class HeartRateBridge : MonoBehaviour {
+class HeartRateBridge : MonoBehaviour {
 #if UNITY_IOS
     public PlayerHappiness.Sensors.HeartbeatSensor.HeartbeatSensorListener listener;
 

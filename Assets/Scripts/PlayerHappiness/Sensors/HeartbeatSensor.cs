@@ -4,9 +4,11 @@ using System.Runtime.InteropServices;
 
 namespace PlayerHappiness.Sensors
 {
-    public class HeartbeatSensor : ISensor
+    class HeartbeatSensor : ISensor
     {
         public bool isActive = false;
+        public static volatile int currentFrame = 0;
+        public static volatile bool connected = false;
         public volatile float rate;
         ICollectorContext m_Context;
 
@@ -21,16 +23,19 @@ namespace PlayerHappiness.Sensors
             
             void onReady()
             {
+                connected = true;
                 CoroutineHandler.RunOnMainThread(() => GameObject.Find("HearBeatSensor")?.SetActive(false));
             }
             
             void onHeartbeat(double rate)
             {
+                currentFrame++;
                 this.sensor.rate = (float)rate;
             }
 
             void onDisconnected()
             {
+                connected = false;
                 CoroutineHandler.RunOnMainThread(() => GameObject.Find("HearBeatSensor")?.SetActive(true));
             }
         }
@@ -76,8 +81,6 @@ namespace PlayerHappiness.Sensors
 
         public HeartbeatSensor()
         {
-            GameObject.Find("HearBeatSensor").SetActive(true);
-            
 #if UNITY_ANDROID
             if (!Application.isEditor)
             {
