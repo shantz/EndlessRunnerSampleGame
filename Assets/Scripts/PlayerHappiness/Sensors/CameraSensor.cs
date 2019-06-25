@@ -26,11 +26,11 @@ namespace PlayerHappiness.Sensors
         private DeviceCamera deviceCamera;
 
         private Texture cameraTexture;
-
-        private bool recording;
+        
         bool m_IsReady;
 
         public string name => "facecam";
+        
         public CameraSensor()
         {
 			recordingClock = new RealtimeClock();
@@ -61,7 +61,6 @@ namespace PlayerHappiness.Sensors
         {
 	        m_IsReady = false;
 	        
-            deviceCamera.StartPreview(OnStart, OnFrame);
 			// Start recording
 			recordingClock = new RealtimeClock();
 			videoRecorder = new MP4Recorder(
@@ -73,12 +72,14 @@ namespace PlayerHappiness.Sensors
 				FileLocationCB,
 				"facecam.mp4"
 			);
+			
+			deviceCamera.StartPreview(OnStart, OnFrame);
         }
 
-
-		private void FileLocationCB(string path)
+        private void FileLocationCB(string path)
 		{
 			Debug.Log("Saved recording to: " + path);
+			
 			recordedFilePath = path;
 			m_Context.SetMetdataFile("cameraVideoUrl", path);
 			m_IsReady = true;
@@ -86,25 +87,22 @@ namespace PlayerHappiness.Sensors
 			PlaybackRecording();
 #endif
 		}
+        
 		public CustomYieldInstruction Stop()
 		{
 			// Stop recording
-            recording = false;
+			deviceCamera.StopPreview();
             videoRecorder.Dispose();
-            deviceCamera.StopPreview();
             return this;
 		}
+		
         void OnStart (Texture preview) {
         // Display the camera preview
             cameraTexture =  preview;
-            recording = true;
         }
+        
         void OnFrame () {
-            if (!recording) {
-                return;
-            }
-
-            var frame = videoRecorder.AcquireFrame();
+	        var frame = videoRecorder.AcquireFrame();
             Graphics.Blit(cameraTexture, frame);
             videoRecorder.CommitFrame(frame, recordingClock.Timestamp);
         }

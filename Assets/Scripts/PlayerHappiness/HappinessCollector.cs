@@ -12,14 +12,17 @@ namespace PlayerHappiness
     public static class HappinessCollector
     {
         static bool m_Initialized;
+        
         static List<ISensor> m_Sensors = new List<ISensor>();
+        
         static List<CollectorContext> m_Contexts = new List<CollectorContext>();
         static Dictionary<string, string> m_Urls = new Dictionary<string, string>();
         static List<CustomYieldInstruction> m_Promisess = new List<CustomYieldInstruction>();
+        
         static float m_StartTime;
         static float m_EndTime;
 
-        static public bool isReady = true;
+        public static bool isReady = true;
 
         public static void Initialize()
         {
@@ -48,6 +51,7 @@ namespace PlayerHappiness
         {
 	        m_Contexts.Clear();
             m_Urls.Clear();
+            m_Promisess.Clear();
 
             m_StartTime = Time.realtimeSinceStartup;
 
@@ -208,6 +212,11 @@ namespace PlayerHappiness
             foreach (var customYieldInstruction in m_Promisess)
             {
 	            yield return customYieldInstruction;
+            }
+            
+            for (var i = 0; i < m_Sensors.Count; i++)
+            {
+	            m_Sensors[i].SetContext(null);
             }
 
             foreach (var collectorContext in m_Contexts)
