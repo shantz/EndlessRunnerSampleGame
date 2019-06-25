@@ -15,7 +15,7 @@ namespace PlayerHappiness.Sensors
         bool isActive;
         ICollectorContext m_Context;
 
-        public string name => "brain";
+        public string name => "eeg";
 
         public BrainSensor()
         {
@@ -49,23 +49,24 @@ namespace PlayerHappiness.Sensors
         {
             while (isActive)
             {
-                if (reciever.hasWaitingMessages())
+                while (reciever.hasWaitingMessages())
                 {
                     s_Connected = true;
                     
                     OSCMessage msg = reciever.getNextMessage();
-                    
+
                     if (msg.Address == "Muse-2FCA/notch_filtered_eeg")
                     {
                         using (var frame = m_Context.DoFrame())
                         {
-                            frame.Write("delta", (float)msg.Data[0]);
-                            frame.Write("theta", (float)msg.Data[1]);
-                            frame.Write("alpha", (float)msg.Data[2]);
-                            frame.Write("beta", (float)msg.Data[3]);
-                            frame.Write("gamma", (float)msg.Data[4]);
-                            frame.Write("mu", (float)msg.Data[5]);
+                            frame.Write("d", (float)msg.Data[0]);
+                            frame.Write("t", (float)msg.Data[1]);
+                            frame.Write("a", (float)msg.Data[2]);
+                            frame.Write("b", (float)msg.Data[3]);
+                            //frame.Write("g", (float)msg.Data[4]);
+                            //frame.Write("m", (float)msg.Data[5]);
                         }
+                        break;
                     }
                 }
 

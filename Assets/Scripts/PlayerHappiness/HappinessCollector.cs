@@ -67,7 +67,6 @@ namespace PlayerHappiness
 
         public static void Stop(Dictionary<string, string> metadata)
         {
-	        Debug.Log("*********************** Stop");
 	        isReady = false;
 	        
 	        m_EndTime =  Time.realtimeSinceStartup;
