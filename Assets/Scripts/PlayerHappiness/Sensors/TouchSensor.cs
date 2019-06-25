@@ -28,13 +28,13 @@ namespace PlayerHappiness.Sensors
                             Touch touch = Input.GetTouch(i);
                             Vector2 pos = new Vector2(touch.position.x / Screen.width, touch.position.x / Screen.height);
                             frame.Write($"c", pos);
-                            if (Input.touchPressureSupported)
+                            //if (Input.touchPressureSupported)
                             {
                                 frame.Write($"p", touch.pressure);
                             }
-                            else
+                            //else
                             {
-                                frame.Write($"p", 0.0f);
+                           //     frame.Write($"p", 0.0f);
                             }
                         }
                     }

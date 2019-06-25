@@ -29,12 +29,7 @@ namespace PlayerHappiness
             return new Frame(frameInfo);
         }
 
-        public void SetMedia(string name, byte[] data)
-        {
-            Media[name] = data;
-        }
-
-	    public void SetMetdataFile(string name, string path)
+        public void SetMetdataFile(string name, string path)
         {
             MediaFile[name] = path;
         }
@@ -86,7 +81,6 @@ namespace PlayerHappiness
         float m_StartTime;
         
         public List<FastFrameInfo> Frames;
-        public Dictionary<string, byte[]> Media;
         public Dictionary<string, string> MediaFile;
         
         public List<FrameData<float>> floats;
@@ -98,7 +92,6 @@ namespace PlayerHappiness
         
         public FastCollectorContext(float startTime)
         {
-            Media = new Dictionary<string, byte[]>();
             MediaFile = new Dictionary<string, string>();
             
             Frames = new List<FastFrameInfo>(120 * 1000 / 16);
@@ -117,11 +110,6 @@ namespace PlayerHappiness
         {
             Frames.Add(new FastFrameInfo(this, Time.realtimeSinceStartup - m_StartTime));
             return new FastFrame(this, Frames.Count - 1);
-        }
-
-        public void SetMedia(string name, byte[] data)
-        {
-            Media[name] = data;
         }
 
         public void SetMetdataFile(string name, string path)

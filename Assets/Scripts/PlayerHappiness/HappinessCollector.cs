@@ -11,6 +11,7 @@ namespace PlayerHappiness
 {
     public static class HappinessCollector
     {
+	    const int MaxAttempts = 10;
         static bool m_Initialized;
         
         static List<ISensor> m_Sensors = new List<ISensor>();
@@ -238,66 +239,73 @@ namespace PlayerHappiness
 
             foreach (var collectorContext in m_Contexts)
             {
-                foreach (var bytes in collectorContext.Media)
-                {
-                    UnityWebRequest uploadMedia = new UnityWebRequest("https://hw19-player-happiness-api.unityads.unity3d.com/api/uploads", "POST");
+	            foreach (var file in collectorContext.MediaFile)
+	            {
+		            yield return UploadFile(file);
+	            }
+            }
 
-                    uploadMedia.uploadHandler = new UploadHandlerRaw(bytes.Value);
+            yield return UploadJson();
+
+            isReady = true;
+        }
+
+		static IEnumerator UploadJson()
+		{
+			string fileName = Application.persistentDataPath + "/response.json";
+			Debug.LogFormat("Writing response to a file: {0}", fileName);
+			File.WriteAllText(fileName, ToJSON());
+			
+			int attempt = 0;
+			while (attempt < MaxAttempts)
+			{
+				attempt++;
+
+				UnityWebRequest webRequest = new UnityWebRequest("https://hw19-player-happiness-api.unityads.unity3d.com/api/sessions", "POST");
+				webRequest.uploadHandler = new UploadHandlerFile(fileName);
+				webRequest.downloadHandler = new DownloadHandlerBuffer();
+
+				yield return webRequest.SendWebRequest();
+
+				if (webRequest.isHttpError || webRequest.isNetworkError)
+				{
+					Debug.LogErrorFormat("Failed to send JSON to server: {0}, {1}", webRequest.error, webRequest.responseCode);
+					Debug.LogError(webRequest.downloadHandler.text);
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+
+		static IEnumerator UploadFile(KeyValuePair<string, string> file)
+		{
+			int attempt = 0;
+			while (attempt < MaxAttempts)
+			{
+				attempt++;
+				
+				using (UnityWebRequest uploadMedia = new UnityWebRequest("https://hw19-player-happiness-api.unityads.unity3d.com/api/uploads", "POST"))
+				{
+					uploadMedia.uploadHandler = new UploadHandlerFile(file.Value);
 					uploadMedia.downloadHandler = new DownloadHandlerBuffer();
 
 					yield return uploadMedia.SendWebRequest();
 
-                    if (uploadMedia.isHttpError || uploadMedia.isNetworkError)
-                    {
-                        Debug.LogErrorFormat("Failed to send media {0} to server: {1}", bytes.Key,  uploadMedia.error);
-                    }
-                    else
-                    {
-						UploadResponse uploadResponse = JsonUtility.FromJson<UploadResponse>(uploadMedia.downloadHandler.text);
-						m_Urls[bytes.Key] = uploadResponse.downloadUrl;
-
+					if (uploadMedia.isHttpError || uploadMedia.isNetworkError)
+					{
+						Debug.LogErrorFormat("Failed to send media {0} to server: {1}", file.Key, uploadMedia.error);
 					}
-                }
-
-                foreach (var file in collectorContext.MediaFile)
-                {
-                    UnityWebRequest uploadMedia = new UnityWebRequest("https://hw19-player-happiness-api.unityads.unity3d.com/api/uploads", "POST");
-
-                    uploadMedia.uploadHandler = new UploadHandlerFile(file.Value);
-                    uploadMedia.downloadHandler = new DownloadHandlerBuffer();
-
-                    yield return uploadMedia.SendWebRequest();
-
-                    if (uploadMedia.isHttpError || uploadMedia.isNetworkError)
-                    {
-                        Debug.LogErrorFormat("Failed to send media {0} to server: {1}", file.Key,  uploadMedia.error);
-                    }
-                    else
-                    {
-	                    UploadResponse uploadResponse = JsonUtility.FromJson<UploadResponse>(uploadMedia.downloadHandler.text);
-	                    m_Urls[file.Key] = uploadResponse.downloadUrl;
-                    }
-                }
-            }
-
-            string fileName = Application.persistentDataPath + "/response.json";
-            Debug.LogFormat("Writing response to a file: {0}", fileName);
-            File.WriteAllText( fileName, ToJSON());
-            
-            UnityWebRequest webRequest = new UnityWebRequest("https://hw19-player-happiness-api.unityads.unity3d.com/api/sessions", "POST");
-            webRequest.uploadHandler = new UploadHandlerFile(fileName);
-            webRequest.downloadHandler = new DownloadHandlerBuffer();
-            
-            yield return webRequest.SendWebRequest();
-
-            if (webRequest.isHttpError || webRequest.isNetworkError)
-            {
-                Debug.LogErrorFormat("Failed to send JSON to server: {0}, {1}", webRequest.error, webRequest.responseCode);
-                Debug.LogError(webRequest.downloadHandler.text);
-            }
-
-            isReady = true;
-        }
+					else
+					{
+						UploadResponse uploadResponse = JsonUtility.FromJson<UploadResponse>(uploadMedia.downloadHandler.text);
+						m_Urls[file.Key] = uploadResponse.downloadUrl;
+						break;
+					}
+				}
+			}
+		}
     }
 }
 
