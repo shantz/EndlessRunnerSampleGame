@@ -62,7 +62,7 @@
 
         if(error) {
             NSLog(@"ERROR: Failed to create sensor connection! \n%@", error);
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self connect:deviceInformation];
             });
         } else {
