@@ -154,6 +154,11 @@ public class TrackManager : MonoBehaviour
         characterController.character.animator.Play(s_StartHash);
         float length = k_CountdownToStartLength;
         m_TimeToStart = length;
+        
+        while (!BrainSensor.s_Connected)
+        {
+            yield return null;
+        }
 
         while (m_TimeToStart >= 0)
         {
@@ -440,6 +445,11 @@ public class TrackManager : MonoBehaviour
                 m_Speed += k_Acceleration * Time.deltaTime;
             else
                 m_Speed = maxSpeed;
+        }
+
+        if (Time.frameCount % 30 == 0)
+        {
+            GameSensor.instance.SendEvent("speed", m_Speed);
         }
 
         m_Multiplier = 1 + Mathf.FloorToInt((m_Speed - minSpeed) / (maxSpeed - minSpeed) * speedStep);

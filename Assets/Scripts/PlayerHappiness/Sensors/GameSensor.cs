@@ -5,6 +5,7 @@ namespace PlayerHappiness.Sensors
     public interface IGameSensor
     {
         void SendEvent(string name);
+        void SendEvent(string name, float value);
     }
 
     public class GameSensor : ISensor, IGameSensor
@@ -37,6 +38,11 @@ namespace PlayerHappiness.Sensors
             {
                 
             }
+
+            public void SendEvent(string name, float value)
+            {
+                
+            }
         }
 
         public void SendEvent(string name)
@@ -44,6 +50,15 @@ namespace PlayerHappiness.Sensors
             using (var frame = m_Context.DoFrame())
             {
                 frame.Write("e", name);
+            }
+        }
+
+        public void SendEvent(string name, float value)
+        {
+            using (var frame = m_Context.DoFrame())
+            {
+                frame.Write("e", name);
+                frame.Write("v", value);
             }
         }
     }

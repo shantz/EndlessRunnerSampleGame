@@ -39,6 +39,7 @@ namespace PlayerHappiness
                 RegisterSensor(new HeartbeatSensor());
                 RegisterSensor(new GameSensor());
                 RegisterSensor(new CameraSensor());
+                RegisterSensor(new BrainSensor());
             }
         }
         

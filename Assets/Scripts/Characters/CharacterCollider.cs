@@ -111,12 +111,14 @@ public class CharacterCollider : MonoBehaviour
 			if (c.GetComponent<Coin>().isPremium)
             {
 				Addressables.ReleaseInstance(c.gameObject);
+				GameSensor.instance.SendEvent("premium");
                 PlayerData.instance.premium += 1;
                 controller.premium += 1;
 				m_Audio.PlayOneShot(premiumSound);
 			}
             else
             {
+	            GameSensor.instance.SendEvent("coin");
 				Coin.coinPool.Free(c.gameObject);
                 PlayerData.instance.coins += 1;
 				controller.coins += 1;
@@ -181,6 +183,7 @@ public class CharacterCollider : MonoBehaviour
             Consumable consumable = c.GetComponent<Consumable>();
             if(consumable != null)
             {
+	            GameSensor.instance.SendEvent("powerup");
                 controller.UseConsumable(consumable);
             }
         }

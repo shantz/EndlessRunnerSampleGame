@@ -21132,11 +21132,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 114000011220535570, guid: ac361d43768a861498da8046b83b94f5,
-        type: 3}
-      propertyPath: m_Text
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 224000012336180652, guid: ac361d43768a861498da8046b83b94f5,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -21196,6 +21191,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011220535570, guid: ac361d43768a861498da8046b83b94f5,
+        type: 3}
+      propertyPath: m_Text
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ac361d43768a861498da8046b83b94f5, type: 3}
@@ -23371,16 +23371,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1000012580447506, guid: 1c8b4e674120cad47a3fc249308e5af3,
         type: 3}
-    - target: {fileID: 224000012287174538, guid: a53fe2875371488408daf0df7d69a981,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000012287174538, guid: a53fe2875371488408daf0df7d69a981,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 224000010498272028, guid: a53fe2875371488408daf0df7d69a981,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -23400,6 +23390,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0.01171875
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013440066280, guid: a53fe2875371488408daf0df7d69a981,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013440066280, guid: a53fe2875371488408daf0df7d69a981,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012287174538, guid: a53fe2875371488408daf0df7d69a981,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012287174538, guid: a53fe2875371488408daf0df7d69a981,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224505876422526116, guid: a53fe2875371488408daf0df7d69a981,
         type: 3}
@@ -23425,16 +23435,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -21.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000013440066280, guid: a53fe2875371488408daf0df7d69a981,
-        type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000013440066280, guid: a53fe2875371488408daf0df7d69a981,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a53fe2875371488408daf0df7d69a981, type: 3}
@@ -25022,8 +25022,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 2094493432}
-  minSpeed: 10
-  maxSpeed: 30
+  minSpeed: 25
+  maxSpeed: 60
   speedStep: 4
   laneOffset: 1.5
   invincible: 0
