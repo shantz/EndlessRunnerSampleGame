@@ -27,7 +27,7 @@ namespace PlayerHappiness.Sensors
                 {
                     frame.Write("rr", Input.gyro.rotationRate);
                     frame.Write("g", Input.gyro.gravity);
-                    frame.Write("ua", Input.gyro.userAcceleration);
+                    frame.Write("ua", Input.acceleration);
                     frame.Write("rru", Input.gyro.rotationRateUnbiased);
                     frame.Write("a", Input.gyro.attitude);
                 }

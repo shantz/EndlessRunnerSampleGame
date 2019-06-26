@@ -272,10 +272,12 @@ public class CharacterInputController : MonoBehaviour
 					{
 						if(TutorialMoveCheck(2) && diff.y < 0)
 						{
+							GameSensor.instance.SendEvent("action");
 							QueueAction(InputAction.Slide);
 						}
 						else if(TutorialMoveCheck(1))
 						{
+							GameSensor.instance.SendEvent("action");
 							QueueAction(InputAction.Jump);
 						}
 					}
@@ -419,7 +421,7 @@ public class CharacterInputController : MonoBehaviour
 				da.presentationTime = t + Random.value * constantlagAmount;
 				break;
 		}
-		GameSensor.instance.SendEvent("action");
+
 		ActionQueue.Add(da);
 	}
 

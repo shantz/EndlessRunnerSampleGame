@@ -154,7 +154,7 @@ public class LoadoutState : AState
 
     public override void Tick()
     {
-        if (!runButton.interactable)
+	    if (!runButton.interactable)
         {
             bool interactable = ThemeDatabase.loaded && CharacterDatabase.loaded && HappinessCollector.isReady;
             if(interactable)

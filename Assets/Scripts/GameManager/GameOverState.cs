@@ -22,6 +22,9 @@ public class GameOverState : AState
 	
 	public Button runButton;
 	public GameObject addButton;
+	public Button leaderboardButton;
+	public Button mainMenuButton;
+
 
     public override void Enter(AState from)
     {
@@ -60,6 +63,8 @@ public class GameOverState : AState
     public override void Tick()
     {
 	    runButton.gameObject.SetActive(HappinessCollector.isReady);
+	    leaderboardButton.gameObject.SetActive(HappinessCollector.isReady);
+	    mainMenuButton.gameObject.SetActive(HappinessCollector.isReady);
     }
 
 	public void OpenLeaderboard()
