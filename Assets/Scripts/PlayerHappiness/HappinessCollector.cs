@@ -83,8 +83,10 @@ namespace PlayerHappiness
             {
 	            m_Promisess.Add((m_Sensors[i].Stop()));
             }
-
-            CoroutineHandler.StartStaticCoroutine(UploadAll());
+            
+            #if !UNITY_EDITOR
+	        CoroutineHandler.StartStaticCoroutine(UploadAll());
+	        #endif
         }
 
         public static string ToJSON()
