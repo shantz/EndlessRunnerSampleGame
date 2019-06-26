@@ -14,6 +14,30 @@ public class CharacterInputController : MonoBehaviour
 	static int s_JumpingSpeedHash = Animator.StringToHash("JumpSpeed");
 	static int s_SlidingHash = Animator.StringToHash("Sliding");
 
+	public enum InputTestMode
+	{
+		Immediate,
+		ConstantLag,
+		RandomLag
+	};
+	public enum InputAction
+	{
+		Jump,
+		Slide,
+		ChangeLeft,
+		ChangeRight,
+	};
+
+	public struct DelayedAction
+	{
+		public InputAction  a;
+		public float presentationTime;
+	}
+
+	protected List<DelayedAction> ActionQueue = new List<DelayedAction>();
+	
+	public InputTestMode InputMode = InputTestMode.ConstantLag;
+
 	public TrackManager trackManager;
 	public Character character;
 	public CharacterCollider characterCollider;
@@ -21,6 +45,7 @@ public class CharacterInputController : MonoBehaviour
 	public float laneChangeSpeed = 1.0f;
 
 	public int maxLife = 3;
+	public float constantlagAmount = 5.0f;
 
 	public Consumable inventory;
 
@@ -166,6 +191,7 @@ public class CharacterInputController : MonoBehaviour
         {
             character.animator.SetBool(s_MovingHash, false);
         }
+        ActionQueue.Clear();
     }
 
     protected bool TutorialMoveCheck(int tutorialLevel)
@@ -183,20 +209,20 @@ public class CharacterInputController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftArrow) && TutorialMoveCheck(0))
         {
-            ChangeLane(-1);
+	        QueueAction(InputAction.ChangeLeft);
         }
         else if(Input.GetKeyDown(KeyCode.RightArrow) && TutorialMoveCheck(0))
         {
-            ChangeLane(1);
+	        QueueAction(InputAction.ChangeRight);
         }
         else if(Input.GetKeyDown(KeyCode.UpArrow) && TutorialMoveCheck(1))
         {
-            Jump();
+			QueueAction(InputAction.Jump);	        
         }
 		else if (Input.GetKeyDown(KeyCode.DownArrow) && TutorialMoveCheck(2))
 		{
 			if(!m_Sliding)
-				Slide();
+				QueueAction(InputAction.Slide);	        
 		}
 #else
         // Use touch input on mobile
@@ -216,22 +242,22 @@ public class CharacterInputController : MonoBehaviour
 					{
 						if(TutorialMoveCheck(2) && diff.y < 0)
 						{
-							Slide();
+							QueueAction(InputAction.Slide);
 						}
 						else if(TutorialMoveCheck(1))
 						{
-							Jump();
+							QueueAction(InputAction.Jump);
 						}
 					}
 					else if(TutorialMoveCheck(0))
 					{
 						if(diff.x < 0)
 						{
-							ChangeLane(-1);
+							QueueAction(InputAction.ChangeLeft);
 						}
 						else
 						{
-							ChangeLane(1);
+							QueueAction(InputAction.ChangeRight);
 						}
 					}
 						
@@ -252,6 +278,8 @@ public class CharacterInputController : MonoBehaviour
 			}
         }
 #endif
+
+	    ProcessInputQueue();
 
         Vector3 verticalTargetPosition = m_TargetPosition;
 
@@ -312,8 +340,59 @@ public class CharacterInputController : MonoBehaviour
             blobShadow.transform.position = shadowPosition;
         }
 	}
+	
+	void ProcessInputQueue()
+	{
+		for( int i=0;i<ActionQueue.Count;)
+		{
+			DelayedAction da = ActionQueue[i];
+			if (da.presentationTime <= Time.time)
+			{
+				switch (da.a)
+				{
+					case InputAction.Slide:
+						Slide();
+						break;
+					case InputAction.Jump:
+						Jump();
+						break;
+					case InputAction.ChangeLeft:
+						ChangeLane(-1);
+						break;
+					case InputAction.ChangeRight:
+						ChangeLane(1);
+						break;
+				}
+				ActionQueue.RemoveAt(i);
+			}
+			else
+			{
+				i++;
+			}
+		}
+	}
 
-    public void Jump()
+	protected void QueueAction(InputAction a)
+	{
+		DelayedAction da = new DelayedAction();
+		da.a = a;
+		switch (InputMode)
+		{
+			case InputTestMode.Immediate:
+				da.presentationTime = Time.time;
+				break;
+			case InputTestMode.ConstantLag:
+				da.presentationTime = Time.time + constantlagAmount;
+				break;
+			case InputTestMode.RandomLag:
+				float t = Time.time;
+				da.presentationTime = t + Random.value * constantlagAmount;
+				break;
+		}
+		ActionQueue.Add(da);
+	}
+
+	public void Jump()
     {
 	    if (!m_IsRunning)
 		    return;
@@ -334,6 +413,8 @@ public class CharacterInputController : MonoBehaviour
         }
     }
 
+
+
     public void StopJumping()
     {
         if (m_Jumping)
@@ -343,7 +424,8 @@ public class CharacterInputController : MonoBehaviour
         }
     }
 
-	public void Slide()
+
+    public void Slide()
 	{
 		if (!m_IsRunning)
 			return;
