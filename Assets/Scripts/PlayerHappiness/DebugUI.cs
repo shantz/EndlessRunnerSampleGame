@@ -87,6 +87,7 @@ namespace PlayerHappiness
         {
             if (Time.frameCount % 60 == 0)
             {
+#if !UNITY_EDITOR
                 Brain_Ping.SetActive(lastBrainFrame == BrainSensor.currentFrame);
                 Heart_Conencted.SetActive(!HeartbeatSensor.connected);
                 Heart_Ping.SetActive(HeartbeatSensor.currentFrame == lastHeartFrame);
@@ -95,6 +96,14 @@ namespace PlayerHappiness
 
                 lastBrainFrame = BrainSensor.currentFrame;
                 lastHeartFrame = HeartbeatSensor.currentFrame;
+                #else
+                Brain_Ping.SetActive(false);
+                Heart_Conencted.SetActive(false);
+                Heart_Ping.SetActive(false);
+                
+                IP_Object.SetActive(false);
+
+#endif
             }
         }
         
