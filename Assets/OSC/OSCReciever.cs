@@ -79,7 +79,7 @@ namespace UnityOSC
                 }
             }
         }
-        
+
         public bool hasWaitingMessages()
         {
             lock (_queue)
@@ -101,7 +101,7 @@ namespace UnityOSC
             Close();
         }
 
-        public OSCMessage getLastMessage(string address)
+        public void getLastMessages(string[] addresses, OSCMessage[] messages)
         {
             lock (_queue)
             {
@@ -111,13 +111,14 @@ namespace UnityOSC
                 {
                     var message = _queue.Dequeue();
 
-                    if (message.Address == address)
+                    for (int i = 0; i < addresses.Length; i++)
                     {
-                        lastMessage = message;
+                        if (message.Address == addresses[i])
+                        {
+                            messages[i] = message;
+                        }
                     }
                 }
-
-                return lastMessage;
             }
         }
     }
