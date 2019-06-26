@@ -24,7 +24,6 @@ namespace PlayerHappiness.Sensors
             void onReady()
             {
                 connected = true;
-                CoroutineHandler.RunOnMainThread(() => GameObject.Find("HearBeatSensor")?.SetActive(false));
             }
             
             void onHeartbeat(double rate)
@@ -36,7 +35,6 @@ namespace PlayerHappiness.Sensors
             void onDisconnected()
             {
                 connected = false;
-                CoroutineHandler.RunOnMainThread(() => GameObject.Find("HearBeatSensor")?.SetActive(true));
             }
         }
 #elif UNITY_IOS
@@ -49,27 +47,28 @@ namespace PlayerHappiness.Sensors
             readonly HeartbeatSensor sensor;
             public HeartbeatSensorListener(HeartbeatSensor sensor)
             {
-                GameObject.Find("HearBeatSensor").GetComponent<HeartRateBridge>().listener = this;
+                var go = new GameObject("HeartbeatSensor");
+                go.AddComponent<HeartRateBridge>();
+                go.GetComponent<HeartRateBridge>().listener = this;
+                GameObject.DontDestroyOnLoad(go);
+
                 this.sensor = sensor;
             }
 
             public void onReady()
             {
+                connected = true;
                 Debug.Log("Heartreate Sensor ready");
             }
 
             public void onHeartbeat(double rate) {
-                if (sensor.isActive)
-                {
-                    using (var frame = this.sensor.m_Context.DoFrame())
-                    {
-                        frame.Write("r", (float)rate);
-                    }
-                }
+                currentFrame++;
+                this.sensor.rate = (float)rate;
             }
 
             public void onDisconnected()
             {
+                connected = false;
                 Debug.Log("Heartreate Sensor disconnected");
             }
 

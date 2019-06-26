@@ -88,7 +88,7 @@
 
     WFHeartrateData* data = [connection getHeartrateData];
     NSString *str = [NSString stringWithFormat:@"HEARTRATE %d", data.computedHeartrate];
-    UnitySendMessage("HearBeatSensor", "HeartRateEvent", [str cStringUsingEncoding:NSUTF8StringEncoding]);
+    UnitySendMessage("HeartbeatSensor", "HeartRateEvent", [str cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 #pragma mark -
@@ -127,10 +127,10 @@
 - (void)connection:(WFSensorConnection*)connectionInfo stateChanged:(WFSensorConnectionStatus_t)connState
 {
     if (connState == WF_SENSOR_CONNECTION_STATUS_CONNECTED) {
-        UnitySendMessage("HearBeatSensor", "HeartRateEvent", "CONNECTED");
+        UnitySendMessage("HeartbeatSensor", "HeartRateEvent", "CONNECTED");
     } else if (connState == WF_SENSOR_CONNECTION_STATUS_INTERRUPTED || connState == WF_SENSOR_CONNECTION_STATUS_DISCONNECTING) {
         self.sensorConnection = nil;
-        UnitySendMessage("HearBeatSensor", "HeartRateEvent", "DISCONNECTED");
+        UnitySendMessage("HeartbeatSensor", "HeartRateEvent", "DISCONNECTED");
     }
 }
 
