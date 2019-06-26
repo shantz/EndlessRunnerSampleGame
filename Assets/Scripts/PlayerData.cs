@@ -381,7 +381,7 @@ public class PlayerData
 
         if (ver >= 12)
         {
-            tutorialDone = r.ReadBoolean();
+            tutorialDone = true; //r.ReadBoolean();
         }
 
         r.Close();
