@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.AddressableAssets;
+using UnityEngine.UI;
 
 /// <summary>
 /// Handle everything related to controlling the character. Interact with both the Character (visual, animation) and CharacterCollider
@@ -36,7 +37,9 @@ public class CharacterInputController : MonoBehaviour
 
 	protected List<DelayedAction> ActionQueue = new List<DelayedAction>();
 	
+	public float constantlagAmount = 5.0f;
 	public InputTestMode InputMode = InputTestMode.ConstantLag;
+	public GameObject textTarget;
 
 	public TrackManager trackManager;
 	public Character character;
@@ -45,7 +48,6 @@ public class CharacterInputController : MonoBehaviour
 	public float laneChangeSpeed = 1.0f;
 
 	public int maxLife = 3;
-	public float constantlagAmount = 5.0f;
 
 	public Consumable inventory;
 
@@ -100,6 +102,33 @@ public class CharacterInputController : MonoBehaviour
     protected const float k_ShadowGroundOffset = 0.01f;
     protected const float k_TrackSpeedToJumpAnimSpeedRatio = 0.6f;
     protected const float k_TrackSpeedToSlideAnimSpeedRatio = 0.9f;
+
+    
+    public void CycleTestMode()
+    {
+	    string label = null;
+	    switch (InputMode)
+	    {
+		    case InputTestMode.Immediate:
+			    InputMode = InputTestMode.ConstantLag;
+			    label =  "Mode #1";
+			    break;
+		    case InputTestMode.ConstantLag:
+			    InputMode = InputTestMode.RandomLag;
+			    label = "Mode #2";
+			    break;
+		    case InputTestMode.RandomLag:
+			    InputMode = InputTestMode.Immediate;
+			    label = "Mode #3";
+			    break;
+	    }
+
+	    if (textTarget != null && textTarget.GetComponents<Text>()!= null)
+	    {
+		    Text text = textTarget.GetComponent<Text>();
+		    text.text = label;
+	    }
+    }
 
     protected void Awake ()
     {
