@@ -117,7 +117,7 @@ namespace PlayerHappiness.Sensors
 
         Quaternion getData(OSCMessage msg)
         {
-            return new Quaternion((float)msg.Data[0], (float)msg.Data[2], (float)msg.Data[3], (float)msg.Data[4]);
+            return new Quaternion((float)msg.Data[0], (float)msg.Data[1], (float)msg.Data[2], (float)msg.Data[3]);
         }
     }
 }

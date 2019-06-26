@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using PlayerHappiness.Sensors;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
@@ -418,6 +419,7 @@ public class CharacterInputController : MonoBehaviour
 				da.presentationTime = t + Random.value * constantlagAmount;
 				break;
 		}
+		GameSensor.instance.SendEvent("action");
 		ActionQueue.Add(da);
 	}
 

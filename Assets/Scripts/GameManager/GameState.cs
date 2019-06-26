@@ -386,12 +386,18 @@ public class GameState : AState
         Shader.SetGlobalFloat("_BlinkingValue", 0.0f);
 
         yield return new WaitForSeconds(2.0f);
+        
+        HappinessCollector.Stop(new Dictionary<string, string>
+        {
+            ["score"] = trackManager.score.ToString()
+        });
+        
         if (currentModifier.OnRunEnd(this))
         {
-            if (trackManager.isRerun)
+            //if (trackManager.isRerun)
                 manager.SwitchState("GameOver");
-            else
-                OpenGameOverPopup();
+            //else
+            //    OpenGameOverPopup();
         }
 	}
 
@@ -421,11 +427,6 @@ public class GameState : AState
 
     public void GameOver()
     {
-        HappinessCollector.Stop(new Dictionary<string, string>
-        {
-            ["score"] = trackManager.score.ToString()
-        });
-        
         manager.SwitchState("GameOver");
     }
 

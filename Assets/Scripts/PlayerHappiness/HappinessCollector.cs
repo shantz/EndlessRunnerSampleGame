@@ -135,12 +135,23 @@ namespace PlayerHappiness
                 builder.Append("]");
             }
 
+            builder.Append("}");
+            
+            return builder.ToString();
+        }
+        
+        public static string ToSessionJSON()
+        {
+	        StringBuilder builder = new StringBuilder();
+
+            builder.Append("{");
+
             foreach (var url in m_Urls)
             {
-                builder.AppendFormat(",\"{0}\":\"{1}\"",url.Key, url.Value);
+                builder.AppendFormat("\"{0}\":\"{1}\",",url.Key, url.Value);
             }
             
-            builder.AppendFormat(",\"length\":{0}", (int)Math.Round((m_EndTime - m_StartTime) * 1000));
+            builder.AppendFormat("\"length\":{0}", (int)Math.Round((m_EndTime - m_StartTime) * 1000));
             
             builder.Append("}");
             
@@ -252,7 +263,13 @@ namespace PlayerHappiness
 		            yield return UploadFile(file);
 	            }
             }
-
+            
+            string fileName = Application.persistentDataPath + "/response.json";
+            Debug.LogFormat("Writing response to a file: {0}", fileName);
+            File.WriteAllText(fileName, ToJSON());
+            
+            yield return UploadFile(new KeyValuePair<string, string>("sensorDataUrl", fileName));
+            
             yield return UploadJson();
 
             isReady = true;
@@ -260,10 +277,10 @@ namespace PlayerHappiness
 
 		static IEnumerator UploadJson()
 		{
-			string fileName = Application.persistentDataPath + "/response.json";
-			Debug.LogFormat("Writing response to a file: {0}", fileName);
-			File.WriteAllText(fileName, ToJSON());
-			
+			string fileName = Application.persistentDataPath + "/session.json";
+			Debug.LogFormat("Writing session to a file: {0}", fileName);
+			File.WriteAllText(fileName, ToSessionJSON());
+
 			int attempt = 0;
 			while (attempt < MaxAttempts)
 			{

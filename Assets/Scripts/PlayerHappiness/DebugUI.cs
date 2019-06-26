@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -105,7 +106,8 @@ namespace PlayerHappiness
             // QR_Code.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
             QR_Texture = new Texture2D(256, 256);
             // qrImage.texture = QR_Texture;
-            GameObject.Find("QRImage").GetComponent<RawImage>().texture = QR_Texture;
+            QR_Code = GameObject.Find("QRImage");
+            QR_Code.GetComponent<RawImage>().texture = QR_Texture;
 
             IP_Object = new GameObject();
             IP_Object.transform.parent = myGO.transform;
@@ -148,9 +150,18 @@ namespace PlayerHappiness
             }
 
             var deltaTime = Time.realtimeSinceStartup - PlayerHappiness.HappinessCollector.m_StartTime;
-            timestampBuffer.Clear();
-            timestampBuffer.AppendFormat("{0}", deltaTime);
-            generateQR(timestampBuffer.ToString());
+
+            if (deltaTime < 3)
+            {
+                timestampBuffer.Clear();
+                timestampBuffer.AppendFormat("{0}", (int)Math.Round(deltaTime * 1000));
+                generateQR(timestampBuffer.ToString());
+                QR_Code.SetActive(true);
+            }
+            else
+            {
+                QR_Code.SetActive(false);
+            }
         }
         
         public static string LocalIPAddress()
