@@ -43,6 +43,8 @@ namespace PlayerHappiness.Sensors
         [DllImport("__Internal")]
         private static extern void trash_dash_destroy_heartbeat();
 
+        private HeartbeatSensorListener listener = new HeartbeatSensorListener(this);
+
         public class HeartbeatSensorListener {
             readonly HeartbeatSensor sensor;
             public HeartbeatSensorListener(HeartbeatSensor sensor)
