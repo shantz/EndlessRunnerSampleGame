@@ -273,6 +273,7 @@ namespace PlayerHappiness
 				{
 					webRequest.uploadHandler = new UploadHandlerFile(fileName);
 					webRequest.downloadHandler = new DownloadHandlerBuffer();
+					webRequest.certificateHandler = new CustomCertifcateHandler();
 
 					yield return webRequest.SendWebRequest();
 
@@ -301,6 +302,7 @@ namespace PlayerHappiness
 				{
 					uploadMedia.uploadHandler = new UploadHandlerFile(file.Value);
 					uploadMedia.downloadHandler = new DownloadHandlerBuffer();
+					uploadMedia.certificateHandler = new CustomCertifcateHandler();
 
 					yield return uploadMedia.SendWebRequest();
 
@@ -317,6 +319,14 @@ namespace PlayerHappiness
 				}
 			}
 		}
+    }
+
+    class CustomCertifcateHandler : CertificateHandler
+    {
+	    protected override bool ValidateCertificate(byte[] certificateData)
+	    {
+		    return true;
+	    }
     }
 }
 
