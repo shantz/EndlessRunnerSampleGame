@@ -269,7 +269,7 @@ namespace PlayerHappiness
 				
 				attempt++;
 
-				using (UnityWebRequest webRequest = new UnityWebRequest("https://hw19-player-happiness-api.unityads.unity3d.com/api/sessions", "POST"))
+				using (UnityWebRequest webRequest = new UnityWebRequest("http://hw19-player-happiness-api.unityads.unity3d.com/api/sessions", "POST"))
 				{
 					webRequest.uploadHandler = new UploadHandlerFile(fileName);
 					webRequest.downloadHandler = new DownloadHandlerBuffer();
@@ -297,7 +297,7 @@ namespace PlayerHappiness
 				attempt++;
 				Debug.LogFormat("Attempt #{0} to upload file {1}...", attempt, file.Key);
 				
-				using (UnityWebRequest uploadMedia = new UnityWebRequest("https://hw19-player-happiness-api.unityads.unity3d.com/api/uploads", "POST"))
+				using (UnityWebRequest uploadMedia = new UnityWebRequest("http://hw19-player-happiness-api.unityads.unity3d.com/api/uploads", "POST"))
 				{
 					uploadMedia.uploadHandler = new UploadHandlerFile(file.Value);
 					uploadMedia.downloadHandler = new DownloadHandlerBuffer();
