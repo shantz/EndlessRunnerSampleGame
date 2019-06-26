@@ -43,7 +43,7 @@ namespace PlayerHappiness.Sensors
         [DllImport("__Internal")]
         private static extern void trash_dash_destroy_heartbeat();
 
-        private HeartbeatSensorListener listener = new HeartbeatSensorListener(this);
+        private HeartbeatSensorListener listener;
 
         public class HeartbeatSensorListener {
             readonly HeartbeatSensor sensor;
@@ -92,6 +92,7 @@ namespace PlayerHappiness.Sensors
 #elif UNITY_IOS
             if (!Application.isEditor)
             {
+                listener = new HeartbeatSensorListener(this);
                 trash_dash_init_heartbeat();
             }
 #endif
