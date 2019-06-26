@@ -1,8 +1,11 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using PlayerHappiness.Sensors;
 using UnityEngine;
 using UnityEngine.UI;
+using ZXing;
+using ZXing.QrCode;
 
 namespace PlayerHappiness
 {
@@ -11,6 +14,27 @@ namespace PlayerHappiness
         GameObject Brain_Ping;
         GameObject Heart_Ping;
         GameObject Heart_Conencted;
+        GameObject QR_Code;
+        Texture2D QR_Texture;
+        StringBuilder timestampBuffer = new StringBuilder(128);
+
+         private static Color32[] Encode(string textForEncoding, int width, int height) {
+            var writer = new BarcodeWriter {
+                Format = BarcodeFormat.QR_CODE,
+                Options = new QrCodeEncodingOptions {
+                    Height = height,
+                    Width = width
+                }
+            };
+            return writer.Write(textForEncoding);
+        }
+
+        private void generateQR(string text) {
+            var encoded = QR_Texture;
+            var color32 = Encode(text, encoded.width, encoded.height);
+            encoded.SetPixels32(color32);
+            encoded.Apply();
+        }
 
         int lastBrainFrame;
         int lastHeartFrame;
@@ -65,7 +89,20 @@ namespace PlayerHappiness
             Brain_Ping.transform.SetParent(myCanvas.transform, false);
             
             Brain_Ping.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-            
+
+            // QR_Code = new GameObject();
+            // QR_Code.transform.parent = myGO.transform;
+            // QR_Code.name = "QR_Code";
+
+            // QR_Code.AddComponent<CanvasRenderer>();
+            // var qrImage = QR_Code.AddComponent<RawImage>();
+            // QR_Code.transform.SetParent(myCanvas.transform, false);
+
+            // QR_Code.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+            QR_Texture = new Texture2D(256, 256);
+            // qrImage.texture = QR_Texture;
+            GameObject.Find("QRImage").GetComponent<RawImage>().texture = QR_Texture;
+
             IP_Object = new GameObject();
             IP_Object.transform.parent = myGO.transform;
             IP_Object.name = "IP";
@@ -105,6 +142,11 @@ namespace PlayerHappiness
 
 #endif
             }
+
+            var deltaTime = Time.realtimeSinceStartup - PlayerHappiness.HappinessCollector.m_StartTime;
+            timestampBuffer.Clear();
+            timestampBuffer.AppendFormat("{0}", deltaTime);
+            generateQR(timestampBuffer.ToString());
         }
         
         public static string LocalIPAddress()

@@ -74,8 +74,8 @@ namespace PlayerHappiness.Sensors
 				"gamevideo.mp4",
 				(int)(480 * 540 * 11.4f)
 			);
-			// Create recording inputs
-			cameraInput = new CameraInput(videoRecorder, recordingClock, Camera.main);
+            // Create recording inputs
+            cameraInput = new CameraInput(videoRecorder, recordingClock, Camera.main);
         }
 
 

@@ -20,8 +20,8 @@ namespace PlayerHappiness
         static Dictionary<string, string> m_Urls = new Dictionary<string, string>();
         static List<CustomYieldInstruction> m_Promisess = new List<CustomYieldInstruction>();
         
-        static float m_StartTime;
-        static float m_EndTime;
+        public static float m_StartTime;
+        public static float m_EndTime;
 
         public static bool isReady = true;
 
