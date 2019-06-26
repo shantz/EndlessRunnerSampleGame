@@ -293,7 +293,13 @@ namespace PlayerHappiness
 					webRequest.uploadHandler = new UploadHandlerFile(fileName);
 					webRequest.downloadHandler = new DownloadHandlerBuffer();
 
-					yield return webRequest.SendWebRequest();
+					var operation = webRequest.SendWebRequest();
+
+					while (!operation.isDone) {
+                        DebugUI.ProgressText = String.Format("JSON Upload %{0}", (int)(100 * operation.progress));
+                        yield return null;
+                    }
+					DebugUI.ProgressText = null;
 
 					if (webRequest.isHttpError || webRequest.isNetworkError)
 					{
@@ -321,9 +327,15 @@ namespace PlayerHappiness
 					uploadMedia.uploadHandler = new UploadHandlerFile(file.Value);
 					uploadMedia.downloadHandler = new DownloadHandlerBuffer();
 
-					yield return uploadMedia.SendWebRequest();
+					var operation = uploadMedia.SendWebRequest();
 
-					if (uploadMedia.isHttpError || uploadMedia.isNetworkError)
+					while (!operation.isDone) {
+						DebugUI.ProgressText = String.Format("{0} Upload %{1}", file.Key, (int)(100 * operation.progress));
+                        yield return null;
+                    }
+                    DebugUI.ProgressText = null;
+
+                    if (uploadMedia.isHttpError || uploadMedia.isNetworkError)
 					{
 						Debug.LogErrorFormat("Failed to send media {0} to server: {1}", file.Key, uploadMedia.error);
 					}

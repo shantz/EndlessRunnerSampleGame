@@ -21,6 +21,8 @@ namespace PlayerHappiness
 
         static BarcodeWriter writer;
 
+        public static string ProgressText = null;
+
         private static Color32[] Encode(string textForEncoding, int width, int height) {
             if (writer == null) {
                 writer = new BarcodeWriter {
@@ -44,6 +46,7 @@ namespace PlayerHappiness
         int lastBrainFrame;
         int lastHeartFrame;
         GameObject IP_Object;
+        GameObject UploadProgress_Object;
 
         void Start()
         {
@@ -115,7 +118,7 @@ namespace PlayerHappiness
             
             IP_Object.AddComponent<CanvasRenderer>();
             Text t = IP_Object.AddComponent<Text>();
-            i.color = Color.black;
+            t.color = Color.black;
             t.text = "IP: " + LocalIPAddress();
             t.fontSize = 40;
             t.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
@@ -124,6 +127,23 @@ namespace PlayerHappiness
             
             IP_Object.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
             IP_Object.GetComponent<RectTransform>().sizeDelta = new Vector2(700, 100);
+
+            UploadProgress_Object = new GameObject();
+            UploadProgress_Object.transform.parent = myGO.transform;
+            UploadProgress_Object.name = "UploadProgress";
+            
+            UploadProgress_Object.AddComponent<CanvasRenderer>();
+            t = UploadProgress_Object.AddComponent<Text>();
+            t.color = Color.black;
+            t.text = "";
+            t.fontSize = 50;
+            t.fontStyle = FontStyle.Bold;
+            t.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            t.alignment = TextAnchor.MiddleCenter;
+            UploadProgress_Object.transform.SetParent(myCanvas.transform, false);
+            
+            UploadProgress_Object.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+            UploadProgress_Object.GetComponent<RectTransform>().sizeDelta = new Vector2(700, 100);
         }
 
         void Update()
@@ -162,6 +182,9 @@ namespace PlayerHappiness
             {
                 QR_Code.SetActive(false);
             }
+
+            string t = ProgressText != null ? ProgressText : "";
+            UploadProgress_Object.GetComponent<Text>().text = t;
         }
         
         public static string LocalIPAddress()
