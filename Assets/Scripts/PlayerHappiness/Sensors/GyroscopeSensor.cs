@@ -6,10 +6,12 @@ namespace PlayerHappiness.Sensors
     class GyroscopeSensor : ISensor
     {
         ICollectorContext m_Context;
+        bool m_Active;
         
         public GyroscopeSensor(float updateInterval)
         {
-            Input.gyro.updateInterval = updateInterval;
+            Input.gyro.enabled = true;
+            //Input.gyro.updateInterval = updateInterval;
         }
         
         public string name => "gyroscope";
@@ -21,30 +23,32 @@ namespace PlayerHappiness.Sensors
 
         IEnumerator CollectFrame()
         {
-            while (Input.gyro.enabled)
+            while (m_Active)
             {
                 using (var frame = m_Context.DoFrame())
                 {
                     frame.Write("rr", Input.gyro.rotationRate);
                     frame.Write("g", Input.gyro.gravity);
-                    frame.Write("ua", Input.acceleration);
+                    frame.Write("ua", Input.gyro.userAcceleration);
                     frame.Write("rru", Input.gyro.rotationRateUnbiased);
                     frame.Write("a", Input.gyro.attitude);
                 }
 
-                yield return new WaitForSeconds(Input.gyro.updateInterval);
+                yield return null;
             }
         }
 
         public void Start()
         {
-            Input.gyro.enabled = true;
+            m_Active = true;
+            //Input.gyro.enabled = true;
             CoroutineHandler.StartStaticCoroutine(CollectFrame());
         }
 
         public CustomYieldInstruction Stop()
         {
-            Input.gyro.enabled = false;
+            m_Active = false;
+            //Input.gyro.enabled = false;
             return null;
         }
     }

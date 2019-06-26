@@ -118,8 +118,7 @@ public class CharacterCollider : MonoBehaviour
 			}
             else
             {
-	            GameSensor.instance.SendEvent("coin");
-				Coin.coinPool.Free(c.gameObject);
+	            Coin.coinPool.Free(c.gameObject);
                 PlayerData.instance.coins += 1;
 				controller.coins += 1;
 				m_Audio.PlayOneShot(coinSound);

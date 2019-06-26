@@ -330,7 +330,7 @@ namespace PlayerHappiness
 					var operation = uploadMedia.SendWebRequest();
 
 					while (!operation.isDone) {
-						DebugUI.ProgressText = String.Format("{0} Upload %{1}", file.Key, (int)(100 * operation.progress));
+						DebugUI.ProgressText = String.Format("{0} Upload {1}%", file.Key, (int)(100 * operation.progress));
                         yield return null;
                     }
                     DebugUI.ProgressText = null;

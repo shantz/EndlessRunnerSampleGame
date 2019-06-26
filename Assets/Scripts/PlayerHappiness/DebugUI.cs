@@ -47,6 +47,7 @@ namespace PlayerHappiness
         int lastHeartFrame;
         GameObject IP_Object;
         GameObject UploadProgress_Object;
+        Text UploadProgress_Object_Text;
 
         void Start()
         {
@@ -144,6 +145,7 @@ namespace PlayerHappiness
             
             UploadProgress_Object.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
             UploadProgress_Object.GetComponent<RectTransform>().sizeDelta = new Vector2(700, 100);
+            UploadProgress_Object_Text = UploadProgress_Object.GetComponent<Text>();
         }
 
         void Update()
@@ -184,7 +186,7 @@ namespace PlayerHappiness
             }
 
             string t = ProgressText != null ? ProgressText : "";
-            UploadProgress_Object.GetComponent<Text>().text = t;
+            UploadProgress_Object_Text.text = t;
         }
         
         public static string LocalIPAddress()

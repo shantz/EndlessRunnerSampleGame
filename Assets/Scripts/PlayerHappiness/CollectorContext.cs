@@ -64,7 +64,7 @@ namespace PlayerHappiness
             startFloats = context.floats.Count;
             startInts = context.ints.Count;
             startVector2s = context.vector2s.Count;
-            startVector3s = context.vector2s.Count;
+            startVector3s = context.vector3s.Count;
             startQuaternions = context.quaternions.Count;
             startStrings = context.strings.Count;
             lengthFloats = 0;

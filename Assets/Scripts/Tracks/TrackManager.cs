@@ -679,7 +679,5 @@ public class TrackManager : MonoBehaviour
     {
         int finalAmount = amount;
         m_Score += finalAmount * m_Multiplier;
-        
-        GameSensor.instance.SendEvent("score");
     }
 }
