@@ -5,7 +5,6 @@ class HeartRateBridge : MonoBehaviour {
     public PlayerHappiness.Sensors.HeartbeatSensor.HeartbeatSensorListener listener;
 
     void HeartRateEvent(string message) {
-        Debug.Log("HEARTRATEBRIDGE: " + message);
         if (listener == null) {
             return;
         }
