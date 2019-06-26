@@ -9,6 +9,7 @@
 @property (nonatomic,strong) NSMutableArray* discoveredDevices;
 @property (nonatomic,strong) WFSensorConnection* sensorConnection;
 @property (strong, nonatomic) NSTimer* dataUpdateTimer;
+@property (strong, nonatomic) WFHardwareConnector* hardwareConnector;
 
 @end
 
@@ -22,6 +23,9 @@
     if(self.discoveredDevices.count || !self.discoveredDevices) {
         self.discoveredDevices = [NSMutableArray new];
     }
+
+    self.hardwareConnector = [WFHardwareConnector sharedConnector];
+    [self.hardwareConnector enableBTLE:YES];
 
     // Setup the discovery manager
     if(self.discoveryManager==nil) {
@@ -50,10 +54,12 @@
 
 - (void) connect:(WFDeviceInformation*)deviceInformation
 {
-    NSArray* connectionParams = [deviceInformation connecitonParamsForAllSupportSensorTypes];
+    NSArray* connectionParams = @[[deviceInformation connectionParamsForSensorType:WF_SENSORTYPE_HEARTRATE]];
+    NSLog(@"Heartrate connection params: %@", connectionParams);
 
     for (WFConnectionParams* params in connectionParams) {
         NSError* error = nil;
+        NSLog(@"Heartrate params: %@", params);
 
         self.sensorConnection = [[WFHardwareConnector sharedConnector] requestSensorConnection:params
                                                                                  withProximity:WF_PROXIMITY_RANGE_DISABLED
@@ -61,7 +67,7 @@
         self.sensorConnection.delegate = self;
 
         if(error) {
-            NSLog(@"ERROR: Failed to create sensor connection! \n%@", error);
+            NSLog(@"ERROR: Failed to create heartrate sensor connection! \n%@", error);
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self connect:deviceInformation];
             });
@@ -95,7 +101,8 @@
         [self.discoveredDevices addObject:deviceInformation];
         [self connect:deviceInformation];
 
-        NSLog(@"Got device - %@", deviceInformation.name);
+        NSLog(@"Heartrate Got device - %@", deviceInformation.name);
+        NSLog(@"Heartrate supported sensor types: %@", deviceInformation.supportedSensorTypes);
     }
 }
 
