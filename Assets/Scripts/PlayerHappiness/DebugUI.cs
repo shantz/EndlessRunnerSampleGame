@@ -18,14 +18,18 @@ namespace PlayerHappiness
         Texture2D QR_Texture;
         StringBuilder timestampBuffer = new StringBuilder(128);
 
-         private static Color32[] Encode(string textForEncoding, int width, int height) {
-            var writer = new BarcodeWriter {
-                Format = BarcodeFormat.QR_CODE,
-                Options = new QrCodeEncodingOptions {
-                    Height = height,
-                    Width = width
-                }
-            };
+        static BarcodeWriter writer;
+
+        private static Color32[] Encode(string textForEncoding, int width, int height) {
+            if (writer == null) {
+                writer = new BarcodeWriter {
+                    Format = BarcodeFormat.QR_CODE,
+                    Options = new QrCodeEncodingOptions {
+                        Height = height,
+                        Width = width
+                    }
+                };
+            }
             return writer.Write(textForEncoding);
         }
 
