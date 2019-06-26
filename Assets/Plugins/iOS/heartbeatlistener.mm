@@ -128,7 +128,7 @@
 {
     if (connState == WF_SENSOR_CONNECTION_STATUS_CONNECTED) {
         UnitySendMessage("HeartbeatSensor", "HeartRateEvent", "CONNECTED");
-        self.connection = connectionInfo;
+        self.sensorConnection = connectionInfo;
     } else if (connState == WF_SENSOR_CONNECTION_STATUS_INTERRUPTED || connState == WF_SENSOR_CONNECTION_STATUS_DISCONNECTING) {
         self.sensorConnection = nil;
         UnitySendMessage("HeartbeatSensor", "HeartRateEvent", "DISCONNECTED");
