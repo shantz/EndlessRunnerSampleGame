@@ -9,6 +9,8 @@ namespace PlayerHappiness.Sensors
         bool isActive;
         
         public string name => "touch";
+        public bool useFrames => true;
+        public int[] projectedValues => new[] { /* f */ 1,  /* i */ 0,  /* s */ 0,  /* v2 */ 1,  /* v3 */ 0,  /* q */ 0 };
 
         public void SetContext(ICollectorContext context)
         {

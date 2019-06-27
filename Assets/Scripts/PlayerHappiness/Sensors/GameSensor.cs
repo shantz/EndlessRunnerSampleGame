@@ -15,6 +15,8 @@ namespace PlayerHappiness.Sensors
         ICollectorContext m_Context;
         FakeGameSensor m_FakeImpl;
         public string name => "game";
+        public bool useFrames => true;
+        public int[] projectedValues => new[] { /* f */ 1,  /* i */ 0,  /* s */ 1,  /* v2 */ 0,  /* v3 */ 0,  /* q */ 0 };
         public void SetContext(ICollectorContext context)
         {
             m_Context = context;

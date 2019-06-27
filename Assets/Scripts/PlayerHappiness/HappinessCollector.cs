@@ -66,7 +66,7 @@ namespace PlayerHappiness
 
             for (var i = 0; i < m_Sensors.Count; i++)
             {
-                m_Contexts.Add(new FastCollectorContext(m_StartTime));
+                m_Contexts.Add(new FastCollectorContext(m_StartTime, m_Sensors[i].useFrames, m_Sensors[i].projectedValues));
                 m_Sensors[i].SetContext(m_Contexts[i]);
                 
                 m_Sensors[i].Start();
@@ -94,10 +94,17 @@ namespace PlayerHappiness
 	        StringBuilder builder = new StringBuilder();
 
             builder.Append("{");
+
+            int writtenNodes = 0;
             
             for (var i = 0; i < m_Sensors.Count; i++)
             {
-                if (i != 0)
+	            if (!m_Sensors[i].useFrames)
+	            {
+		            continue;
+	            }
+	            
+                if (writtenNodes != 0)
                 {
                     builder.Append(",");
                 }
@@ -133,6 +140,8 @@ namespace PlayerHappiness
                     builder.Append("}");
                 }
                 builder.Append("]");
+
+                writtenNodes++;
             }
 
             builder.Append("}");
@@ -256,12 +265,36 @@ namespace PlayerHappiness
 	            m_Sensors[i].SetContext(null);
             }
 
+            int k = 0;
             foreach (var collectorContext in m_Contexts)
             {
+	            /*
+	            if (collectorContext.Frames != null)
+	            {
+		            Debug.LogFormat("Context for {0}: floats - {1}, strings - {2}, vector2 - {3}, vector3 - {4}, quat - {5}, frames - {6}", m_Sensors[k].name
+			            , collectorContext.floats.Count
+			            , collectorContext.strings.Count
+			            , collectorContext.vector2s.Count
+			            , collectorContext.vector3s.Count
+			            , collectorContext.quaternions.Count
+			            , collectorContext.Frames.Count);
+
+		            Debug.LogFormat("Capacity for {0}: floats - {1}, strings - {2}, vector2 - {3}, vector3 - {4}, quat - {5}, frames - {6}", m_Sensors[k].name
+			            , collectorContext.floats.Capacity
+			            , collectorContext.strings.Capacity
+			            , collectorContext.vector2s.Capacity
+			            , collectorContext.vector3s.Capacity
+			            , collectorContext.quaternions.Capacity
+			            , collectorContext.Frames.Capacity);
+	            }
+	            */
+
 	            foreach (var file in collectorContext.MediaFile)
 	            {
 		            yield return UploadFile(file);
 	            }
+
+	            k++;
             }
             
             string fileName = Application.persistentDataPath + "/response.json";
@@ -296,7 +329,7 @@ namespace PlayerHappiness
 					var operation = webRequest.SendWebRequest();
 
 					while (!operation.isDone) {
-                        DebugUI.ProgressText = String.Format("JSON Upload %{0}", (int)(100 * operation.progress));
+                        DebugUI.ProgressText = String.Format("JSON Upload {0}%", (int)(100 * webRequest.uploadProgress));
                         yield return null;
                     }
 					DebugUI.ProgressText = null;
@@ -330,7 +363,7 @@ namespace PlayerHappiness
 					var operation = uploadMedia.SendWebRequest();
 
 					while (!operation.isDone) {
-						DebugUI.ProgressText = String.Format("{0} Upload {1}%", file.Key, (int)(100 * operation.progress));
+						DebugUI.ProgressText = String.Format("{0} Upload {1}%", file.Key, (int)(100 * uploadMedia.uploadProgress));
                         yield return null;
                     }
                     DebugUI.ProgressText = null;

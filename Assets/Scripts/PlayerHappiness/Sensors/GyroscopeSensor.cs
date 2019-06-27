@@ -15,6 +15,8 @@ namespace PlayerHappiness.Sensors
         }
         
         public string name => "gyroscope";
+        public bool useFrames => true;
+        public int[] projectedValues => new[] { /* f */ 0,  /* i */ 0,  /* s */ 0,  /* v2 */ 0,  /* v3 */ 4,  /* q */ 1 };
         
         public void SetContext(ICollectorContext context)
         {

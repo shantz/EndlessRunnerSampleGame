@@ -99,6 +99,8 @@ namespace PlayerHappiness.Sensors
         }
         
         public string name => "heartbeat";
+        public bool useFrames => true;
+        public int[] projectedValues => new[] { /* f */ 1,  /* i */ 0,  /* s */ 0,  /* v2 */ 0,  /* v3 */ 0,  /* q */ 0 };
 
         public void SetContext(ICollectorContext context)
         {

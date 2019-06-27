@@ -38,6 +38,8 @@ namespace PlayerHappiness.Sensors
         ICollectorContext m_Context;
 
         public string name => "muse";
+        public bool useFrames => true;
+        public int[] projectedValues => new[] { /* f */ 0,  /* i */ 0,  /* s */ 0,  /* v2 */ 0,  /* v3 */ 0,  /* q */ 6 };
 
         public BrainSensor()
         {

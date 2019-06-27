@@ -18,7 +18,7 @@ namespace PlayerHappiness
         {
             Media = new Dictionary<string, byte[]>();
             MediaFile = new Dictionary<string, string>();
-            Frames = new List<FrameInfo>(120 * 1000 / 16);
+            Frames = new List<FrameInfo>(4 * 60 * 1000 / 16);
             m_StartTime = startTime;
         }
         
@@ -90,19 +90,24 @@ namespace PlayerHappiness
         public List<FrameData<Quaternion>> quaternions;
         public List<FrameData<string>> strings;
         
-        public FastCollectorContext(float startTime)
+        public FastCollectorContext(float startTime, bool useFrames, int[] projection)
         {
             MediaFile = new Dictionary<string, string>();
-            
-            Frames = new List<FastFrameInfo>(120 * 1000 / 16);
 
-            floats = new List<FrameData<float>>(120 * 1000 / 16);
-            ints = new List<FrameData<int>>(120 * 1000 / 16);
-            strings = new List<FrameData<string>>(120 * 1000 / 16);
-            vector2s = new List<FrameData<Vector2>>(120 * 1000 / 16);
-            vector3s = new List<FrameData<Vector3>>(120 * 1000 / 16);
-            quaternions = new List<FrameData<Quaternion>>(120 * 1000 / 16);
-            
+            if (useFrames)
+            {
+                int projectedTime = 4 * 60 * 1000 / 16;
+                
+                Frames = new List<FastFrameInfo>(projectedTime);
+
+                floats = new List<FrameData<float>>(projectedTime * projection[0]);
+                ints = new List<FrameData<int>>(projectedTime * projection[1]);
+                strings = new List<FrameData<string>>(projectedTime * projection[2]);
+                vector2s = new List<FrameData<Vector2>>(projectedTime * projection[3]);
+                vector3s = new List<FrameData<Vector3>>(projectedTime * projection[4]);
+                quaternions = new List<FrameData<Quaternion>>(projectedTime * projection[5]);
+            }
+
             m_StartTime = startTime;
         }
         
@@ -119,7 +124,7 @@ namespace PlayerHappiness
 
     }
 
-    class FastFrame : IFrame {
+    struct FastFrame : IFrame {
         readonly FastCollectorContext fastCollectorContext;
         readonly int index;
 
@@ -141,11 +146,6 @@ namespace PlayerHappiness
                 name = name,
                 value = value
             });
-
-            if (fastCollectorContext.strings.Count - 1 != fastCollectorContext.Frames[index].startStrings + fastCollectorContext.Frames[index].lengthStrings)
-            {
-                throw new Exception();
-            }
 
             var frame = fastCollectorContext.Frames[index];
             frame.lengthStrings++;

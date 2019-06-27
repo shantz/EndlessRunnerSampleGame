@@ -50,6 +50,8 @@ namespace PlayerHappiness.Sensors
 		}
 		
 		public string name => "screen";
+		public bool useFrames => false;
+		public int[] projectedValues => new[] { /* f */ 0,  /* i */ 0,  /* s */ 0,  /* v2 */ 0,  /* v3 */ 0,  /* q */ 0 };
 
         public void SetContext(ICollectorContext context)
         {
