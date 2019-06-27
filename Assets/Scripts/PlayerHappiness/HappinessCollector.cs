@@ -125,12 +125,6 @@ namespace PlayerHappiness
                 
                     builder.Append("{");
                     builder.AppendFormat("\"ts\":{0}", (int)Math.Round(frame.timestamp * 1000));
-                    //WriteValues(builder, frame.floats);
-					//WriteValues(builder, frame.ints);
-					//WriteValues(builder, frame.vector2s);
-					//WriteValues(builder, frame.vector3s);
-                   // WriteValues(builder, frame.quaternions);
-                   // WriteValues(builder, frame.strings);
                     WriteValues(builder, context.floats, frame.startFloats, frame.lengthFloats);
                     WriteValues(builder, context.ints, frame.startInts, frame.lengthInts);
                     WriteValues(builder, context.vector2s, frame.startVector2s, frame.lengthVector2s);
@@ -201,57 +195,7 @@ namespace PlayerHappiness
 	        }
         }
 
-        static void WriteValues<T>(StringBuilder builder, List<FrameData<T>> datas)
-        {
-	        WriteValues(builder, datas, 0, datas.Count);
-        }
-
-		static void WriteValue(StringBuilder builder, string name, float value)
-		{
-			builder.AppendFormat(",\"{0}\":{1}", name, value);
-		}
-
-		static void WriteValue(StringBuilder builder, string name, Vector2 value)
-		{
-			builder.AppendFormat(",\"{0}\":", name);
-			builder.Append("{");
-			builder.AppendFormat("\"x\":{0},", value.x);
-			builder.AppendFormat("\"y\":{0}", value.y);
-			builder.Append("}");
-		}
-
-		static void WriteValue(StringBuilder builder, string name, Vector3 value)
-		{
-			builder.AppendFormat(",\"{0}\":", name);
-			builder.Append("{");
-			builder.AppendFormat("\"x\":{0},", value.x);
-			builder.AppendFormat("\"y\":{0},", value.y);
-			builder.AppendFormat("\"z\":{0}", value.z);
-			builder.Append("}");
-		}
-
-		static void WriteValue(StringBuilder builder, string name, Quaternion value)
-		{
-			builder.AppendFormat(",\"{0}\":", name);
-			builder.Append("{");
-			builder.AppendFormat("\"w\":{0},", value.w);
-			builder.AppendFormat("\"x\":{0},", value.x);
-			builder.AppendFormat("\"y\":{0},", value.y);
-			builder.AppendFormat("\"z\":{0}", value.z);
-			builder.Append("}");
-		}
-
-		static void WriteValue(StringBuilder builder, string name, string value)
-		{
-			builder.AppendFormat(",\"{0}\":\"{1}\"", name, value);
-		}
-
-		static void WriteValue<T>(StringBuilder builder, string name, T value)
-		{
-			builder.AppendFormat(",\"{0}\":{1}", name, value);
-		}
-
-		static IEnumerator UploadAll()
+        static IEnumerator UploadAll()
         {
 	        yield return null;
 
