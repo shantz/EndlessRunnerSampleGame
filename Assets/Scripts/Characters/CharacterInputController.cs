@@ -272,12 +272,10 @@ public class CharacterInputController : MonoBehaviour
 					{
 						if(TutorialMoveCheck(2) && diff.y < 0)
 						{
-							GameSensor.instance.SendEvent("action");
 							QueueAction(InputAction.Slide);
 						}
 						else if(TutorialMoveCheck(1))
 						{
-							GameSensor.instance.SendEvent("action");
 							QueueAction(InputAction.Jump);
 						}
 					}

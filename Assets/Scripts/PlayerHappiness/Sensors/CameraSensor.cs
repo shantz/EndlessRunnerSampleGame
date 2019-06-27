@@ -94,7 +94,7 @@ namespace PlayerHappiness.Sensors
 		{
 			// Stop recording
 			deviceCamera.StopPreview();
-            videoRecorder.Dispose();
+			videoRecorder.Dispose();
             return this;
 		}
 		

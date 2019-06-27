@@ -269,6 +269,8 @@ namespace PlayerHappiness
 				{
 					webRequest.uploadHandler = new UploadHandlerFile(fileName);
 					webRequest.downloadHandler = new DownloadHandlerBuffer();
+					
+					webRequest.SetRequestHeader("Content-Type", "application/json");
 
 					var operation = webRequest.SendWebRequest();
 
@@ -304,6 +306,15 @@ namespace PlayerHappiness
 					uploadMedia.uploadHandler = new UploadHandlerFile(file.Value);
 					uploadMedia.downloadHandler = new DownloadHandlerBuffer();
 
+					if (file.Value.EndsWith("json"))
+					{
+						uploadMedia.SetRequestHeader("Content-Type", "application/json");
+					}
+					else
+					{
+						uploadMedia.SetRequestHeader("Content-Type", "video/mp4");
+					}
+
 					var operation = uploadMedia.SendWebRequest();
 
 					while (!operation.isDone) {
@@ -325,14 +336,6 @@ namespace PlayerHappiness
 				}
 			}
 		}
-    }
-
-    class CustomCertifcateHandler : CertificateHandler
-    {
-	    protected override bool ValidateCertificate(byte[] certificateData)
-	    {
-		    return true;
-	    }
     }
 }
 
